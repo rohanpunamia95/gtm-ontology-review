@@ -1,0 +1,99 @@
+/* ─── COLOR TOKENS ──────────────────────────────────────────────────────── */
+
+:root {
+  /* Brand Blue — "Salesforce Blue" family, anchors everything */
+  --sf-blue-50:  #EEF4FF;   /* cloud backgrounds, hover tints */
+  --sf-blue-100: #D8EAFF;
+  --sf-blue-200: #9DC2F5;
+  --sf-blue-300: #78AEEC;   /* decorative, data-vis */
+  --sf-blue-400: #3E8FDE;
+  --sf-blue-500: #0176D3;   /* ← PRIMARY brand anchor: links, CTAs */
+  --sf-blue-600: #0558A8;   /* primary hover */
+  --sf-blue-700: #014486;   /* active / pressed */
+  --sf-blue-800: #023163;
+  --sf-blue-900: #032D60;   /* dark nav, Agentforce base surface */
+
+  /* Neutrals */
+  --sf-gray-50:  #FAFAFA;
+  --sf-gray-100: #F3F3F3;   /* page background */
+  --sf-gray-200: #E5E5E5;   /* card borders */
+  --sf-gray-300: #C9C9C9;
+  --sf-gray-400: #AEAEAE;   /* disabled, placeholder */
+  --sf-gray-500: #939393;
+  --sf-gray-600: #747474;   /* secondary text */
+  --sf-gray-700: #585858;
+  --sf-gray-800: #3E3E3C;
+  --sf-gray-900: #1C1C1A;   /* primary text */
+
+  /* Agentforce / AI accent — cosmic layer (the "30% cutting edge") */
+  --sf-violet-100: #EDE9FE;
+  --sf-violet-300: #C4B5FD;
+  --sf-violet-500: #8B5CF6;   /* ← agent accent, AI features */
+  --sf-violet-700: #6D28D9;
+  --sf-violet-900: #3B0764;
+
+  --sf-teal-100: #CCFBF1;
+  --sf-teal-300: #5EEAD4;
+  --sf-teal-500: #0D9DDA;     /* ← data flow, live indicators */
+  --sf-teal-700: #0E7490;
+
+  /* Semantic status */
+  --sf-success-100: #EEF5EA;
+  --sf-success-500: #2E844A;
+  --sf-success-700: #1A5736;
+
+  --sf-warning-100: #FEF6E0;
+  --sf-warning-500: #DD7A01;
+  --sf-warning-700: #8E4700;
+
+  --sf-error-100:   #FEE3E1;
+  --sf-error-500:   #BA0517;
+  --sf-error-700:   #8E030F;
+
+  --sf-info-100:    #EEF4FF;
+  --sf-info-500:    #0176D3;
+
+  /* Absolutes */
+  --sf-white: #FFFFFF;
+  --sf-black: #000000;
+
+  /* ─── SEMANTIC ROLE ALIASES ────────────────────────────────────────── */
+
+  /* Foreground / text */
+  --color-text-primary:    var(--sf-gray-900);
+  --color-text-secondary:  var(--sf-gray-600);
+  --color-text-disabled:   var(--sf-gray-400);
+  --color-text-inverse:    var(--sf-white);
+  --color-text-link:       var(--sf-blue-500);
+  --color-text-link-hover: var(--sf-blue-700);
+
+  /* Surfaces / backgrounds */
+  --color-bg-page:     var(--sf-gray-100);
+  --color-bg-surface:  var(--sf-white);
+  --color-bg-subtle:   var(--sf-gray-50);
+  --color-bg-overlay:  rgba(0, 0, 0, 0.5);
+  --color-bg-hover:    var(--sf-blue-50);
+  --color-bg-selected: var(--sf-blue-100);
+
+  /* Borders */
+  --color-border:        var(--sf-gray-200);
+  --color-border-strong: var(--sf-gray-400);
+  --color-border-focus:  var(--sf-blue-500);
+
+  /* Interactive — primary action */
+  --color-action-primary:       var(--sf-blue-500);
+  --color-action-primary-hover: var(--sf-blue-600);
+  --color-action-primary-press: var(--sf-blue-700);
+
+  /* Agentforce dark surface roles */
+  --color-bg-agent-base:     var(--sf-blue-900);
+  --color-bg-agent-surface:  rgba(255, 255, 255, 0.05);
+  --color-bg-agent-high:     rgba(255, 255, 255, 0.09);
+  --color-border-agent:      rgba(255, 255, 255, 0.10);
+  --color-border-agent-high: rgba(255, 255, 255, 0.18);
+  --color-text-agent:        rgba(255, 255, 255, 0.92);
+  --color-text-agent-muted:  rgba(255, 255, 255, 0.55);
+  --color-text-agent-dim:    rgba(255, 255, 255, 0.35);
+  --color-agent-accent:      var(--sf-violet-500);
+  --color-agent-data:        var(--sf-teal-500);
+}

@@ -1,0 +1,78 @@
+/* ─── BASE RESET & GLOBAL ───────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-size-adjust: 100%;
+}
+
+body {
+  font: var(--type-body);
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  background: var(--color-bg-page);
+}
+
+input, select, textarea, button {
+  font-family: inherit;
+}
+
+a {
+  color: var(--color-text-link);
+  text-decoration: none;
+}
+a:hover { color: var(--color-text-link-hover); text-decoration: underline; }
+
+/* ─── TYPE UTILITY CLASSES ──────────────────────────────────────────────── */
+
+.display-xl { font: var(--type-display-xl); letter-spacing: var(--tracking-tight); }
+.display-lg { font: var(--type-display-lg); letter-spacing: var(--tracking-tight); }
+.display-md { font: var(--type-display-md); }
+.h1 { font: var(--type-h1); }
+.h2 { font: var(--type-h2); }
+.h3 { font: var(--type-h3); }
+.h4 { font: var(--type-h4); }
+.h5 { font: var(--type-h5); }
+.h6 { font: var(--type-h6); }
+.body-lg  { font: var(--type-body-lg); }
+.body     { font: var(--type-body); }
+.body-sm  { font: var(--type-body-sm); }
+.label    { font: var(--type-label); }
+.label-sm { font: var(--type-label-sm); }
+.label-xs { font: var(--type-label-xs); }
+.overline { font: var(--type-overline); text-transform: uppercase; letter-spacing: var(--tracking-wider); color: var(--color-text-secondary); }
+.code     { font: var(--type-code); }
+.code-sm  { font: var(--type-code-sm); }
+
+.text-primary   { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-disabled  { color: var(--color-text-disabled); }
+.text-inverse   { color: var(--color-text-inverse); }
+.text-link      { color: var(--color-text-link); }
+
+/* ─── SURFACE HELPERS ───────────────────────────────────────────────────── */
+
+.surface {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+}
+.surface-agent {
+  background: var(--color-bg-agent-surface);
+  border: 1px solid var(--color-border-agent);
+  border-radius: var(--radius-lg);
+}
+
+/* ─── SCROLLBARS ────────────────────────────────────────────────────────── */
+
+.sf-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.sf-scroll::-webkit-scrollbar-track { background: transparent; }
+.sf-scroll::-webkit-scrollbar-thumb { background: var(--sf-gray-300); border-radius: var(--radius-full); }

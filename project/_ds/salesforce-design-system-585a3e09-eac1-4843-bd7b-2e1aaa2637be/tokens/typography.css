@@ -1,0 +1,74 @@
+/* ─── TYPOGRAPHY TOKENS ─────────────────────────────────────────────────── */
+
+:root {
+  /* Font families */
+  --font-sans: 'Plus Jakarta Sans', 'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', ui-monospace, monospace;
+
+  /* Type scale */
+  --text-2xs:  11px;
+  --text-xs:   12px;
+  --text-sm:   13px;
+  --text-base: 14px;   /* base body size */
+  --text-md:   16px;
+  --text-lg:   18px;
+  --text-xl:   20px;
+  --text-2xl:  24px;
+  --text-3xl:  28px;
+  --text-4xl:  32px;
+  --text-5xl:  36px;
+  --text-6xl:  48px;
+
+  /* Weights */
+  --weight-regular:   400;
+  --weight-medium:    500;
+  --weight-semibold:  600;
+  --weight-bold:      700;
+  --weight-extrabold: 800;
+
+  /* Line heights */
+  --leading-tight:   1.2;
+  --leading-snug:    1.35;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+
+  /* Letter spacing */
+  --tracking-tight:  -0.01em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.01em;   /* labels */
+  --tracking-wider:   0.05em;   /* ALL-CAPS utility / overline */
+}
+
+/* ─── SEMANTIC TYPE STYLES (font shorthand) ─────────────────────────────── */
+
+:root {
+  /* Display / Hero */
+  --type-display-xl: var(--weight-bold)     var(--text-6xl)/var(--leading-tight) var(--font-sans);
+  --type-display-lg: var(--weight-bold)     var(--text-5xl)/var(--leading-tight) var(--font-sans);
+  --type-display-md: var(--weight-semibold) var(--text-4xl)/var(--leading-tight) var(--font-sans);
+
+  /* Headings */
+  --type-h1: var(--weight-semibold) var(--text-3xl)/var(--leading-snug) var(--font-sans);
+  --type-h2: var(--weight-semibold) var(--text-2xl)/var(--leading-snug) var(--font-sans);
+  --type-h3: var(--weight-semibold) var(--text-xl)/var(--leading-snug) var(--font-sans);
+  --type-h4: var(--weight-semibold) var(--text-lg)/var(--leading-snug) var(--font-sans);
+  --type-h5: var(--weight-medium)   var(--text-md)/var(--leading-snug) var(--font-sans);
+  --type-h6: var(--weight-medium)   var(--text-base)/var(--leading-snug) var(--font-sans);
+
+  /* Body */
+  --type-body-lg: var(--weight-regular) var(--text-md)/var(--leading-normal) var(--font-sans);
+  --type-body:    var(--weight-regular) var(--text-base)/var(--leading-normal) var(--font-sans);
+  --type-body-sm: var(--weight-regular) var(--text-sm)/var(--leading-normal) var(--font-sans);
+
+  /* Labels */
+  --type-label:    var(--weight-medium) var(--text-base)/var(--leading-snug) var(--font-sans);
+  --type-label-sm: var(--weight-medium) var(--text-sm)/var(--leading-snug) var(--font-sans);
+  --type-label-xs: var(--weight-medium) var(--text-xs)/var(--leading-snug) var(--font-sans);
+
+  /* Utility / Overline (use with text-transform: uppercase + tracking-wider) */
+  --type-overline: var(--weight-semibold) var(--text-xs)/var(--leading-tight) var(--font-sans);
+
+  /* Code / data */
+  --type-code:    var(--weight-regular) var(--text-sm)/var(--leading-normal) var(--font-mono);
+  --type-code-sm: var(--weight-regular) var(--text-xs)/var(--leading-normal) var(--font-mono);
+}
