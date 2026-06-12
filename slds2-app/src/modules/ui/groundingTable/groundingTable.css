@@ -1,0 +1,55 @@
+.table-wrap {
+    background: var(--slds-g-color-surface-container-1, #fff);
+    border: 1px solid var(--slds-g-color-border-1, #e5e5e5);
+    border-radius: var(--slds-g-radius-border-2, 0.25rem);
+    overflow-x: auto;
+}
+
+.grounding-row {
+    cursor: pointer;
+}
+
+.cell-strong {
+    font-weight: 600;
+    color: var(--slds-g-color-on-surface-3, #181818);
+}
+
+.cell-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: normal;
+    line-height: 1.35;
+}
+
+.cell-muted {
+    color: var(--slds-g-color-on-surface-1, #939393);
+    font-size: 0.75rem;
+}
+
+.bar-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bar-track {
+    flex: 1 1 auto;
+    min-width: 3rem;
+}
+
+.bar-text {
+    font-size: 0.75rem;
+    color: var(--slds-g-color-on-surface-2, #5c5c5c);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.pill-badge {
+    font-weight: 400;
+}
+
+.action-cell {
+    text-align: center;
+}

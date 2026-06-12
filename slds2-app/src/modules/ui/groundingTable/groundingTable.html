@@ -1,0 +1,64 @@
+<template>
+    <div class="table-wrap">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <template for:each={columns} for:item="col">
+                        <th key={col.key} scope="col" style={col.style}>
+                            <div class="slds-truncate slds-text-title_caps" title={col.label}>{col.label}</div>
+                        </th>
+                    </template>
+                    <th scope="col" style="width:3.25rem">
+                        <div class="slds-truncate slds-assistive-text">Actions</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={rows} for:item="row">
+                    <tr key={row.id} class="slds-hint-parent grounding-row" data-id={row.id} onclick={handleRowClick}>
+                        <template for:each={row.cells} for:item="cell">
+                            <td key={cell.key} role="gridcell">
+                                <template lwc:if={cell.isStrong}>
+                                    <div class="slds-truncate cell-strong" title={cell.text}>{cell.text}</div>
+                                </template>
+                                <template lwc:elseif={cell.isBadge}>
+                                    <span class={cell.badgeClass}>{cell.text}</span>
+                                </template>
+                                <template lwc:elseif={cell.isMuted}>
+                                    <span class="cell-muted">{cell.text}</span>
+                                </template>
+                                <template lwc:elseif={cell.isBar}>
+                                    <div class="bar-cell">
+                                        <div class="slds-progress-bar slds-progress-bar_small bar-track" aria-hidden="true">
+                                            <span class="slds-progress-bar__value" style={cell.barStyle}></span>
+                                        </div>
+                                        <span class="bar-text">{cell.text}</span>
+                                    </div>
+                                </template>
+                                <template lwc:elseif={cell.isPills}>
+                                    <template for:each={cell.pills} for:item="p">
+                                        <span key={p} class="slds-badge slds-m-right_xx-small pill-badge">{p}</span>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="cell-clamp" title={cell.text}>{cell.text}</div>
+                                </template>
+                            </td>
+                        </template>
+                        <td role="gridcell" class="action-cell" onclick={stopRowClick}>
+                            <lightning-button-icon
+                                icon-name="utility:edit"
+                                variant="bare"
+                                size="small"
+                                alternative-text="Edit row"
+                                title="Edit row"
+                                data-id={row.id}
+                                onclick={handleEdit}>
+                            </lightning-button-icon>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+</template>

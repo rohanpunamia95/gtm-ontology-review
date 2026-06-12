@@ -1,0 +1,189 @@
+.page-shell {
+    max-width: 90rem;
+    margin: 0 auto;
+}
+
+/* ── Header ── */
+.auto-badge {
+    vertical-align: middle;
+}
+
+.header-sub {
+    color: var(--slds-g-color-on-surface-2, #5c5c5c);
+    max-width: 56rem;
+    margin-top: 0.25rem;
+}
+
+.header-prov {
+    color: var(--slds-g-color-on-surface-2, #5c5c5c);
+    font-size: 0.8125rem;
+    margin-top: 0.25rem;
+}
+
+/* ── Layout ── */
+.rail-col {
+    width: 15.5rem;
+    flex: none;
+}
+
+.rail-box {
+    padding: 0.25rem 0;
+    background: var(--slds-g-color-surface-container-1, #fff);
+    position: sticky;
+    top: 0.5rem;
+}
+
+.rail-label {
+    font-weight: 600;
+}
+
+.content-col {
+    min-width: 0;
+}
+
+.content-card {
+    overflow: visible;
+}
+
+.tab-count {
+    color: var(--slds-g-color-on-surface-1, #939393);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── ICP sections ── */
+.def-box {
+    cursor: pointer;
+    background: var(--slds-g-color-surface-container-1, #fff);
+}
+
+.def-overline {
+    color: var(--slds-g-color-on-surface-1, #939393);
+    font-size: 0.625rem;
+    margin-bottom: 0.125rem;
+}
+
+.def-value {
+    font-weight: 600;
+}
+
+.def-sub {
+    color: var(--slds-g-color-on-surface-1, #939393);
+    font-size: 0.75rem;
+    margin-top: 0.125rem;
+}
+
+.empty-box {
+    border-style: dashed;
+    background: var(--slds-g-color-surface-container-1, #fff);
+}
+
+.poor-fit-title {
+    display: flex;
+    align-items: center;
+}
+
+/* ── Drawer ── */
+.drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 9000;
+}
+
+.drawer-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 27rem;
+    max-width: 92vw;
+    z-index: 9001;
+    display: flex;
+    flex-direction: column;
+}
+
+.drawer-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+.drawer-overline {
+    color: var(--slds-g-color-on-surface-1, #939393);
+    font-size: 0.625rem;
+    margin-bottom: 0.25rem;
+}
+
+.claim-text {
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    color: var(--slds-g-color-on-surface-1, #939393);
+}
+
+.fact-row {
+    padding: 0.625rem 0;
+    border-bottom: 1px solid var(--slds-g-color-border-1, #e5e5e5);
+}
+
+.fact-label {
+    font-size: 0.75rem;
+    color: var(--slds-g-color-on-surface-1, #939393);
+    margin-bottom: 0.25rem;
+}
+
+.fact-text {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+}
+
+.source-row {
+    padding: 0.625rem 0;
+    border-bottom: 1px solid var(--slds-g-color-border-1, #e5e5e5);
+}
+
+.source-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.source-label {
+    font-weight: 600;
+    font-size: 0.8125rem;
+}
+
+.source-when {
+    font-size: 0.75rem;
+    color: var(--slds-g-color-on-surface-1, #939393);
+    white-space: nowrap;
+}
+
+.source-snippet {
+    font-style: italic;
+    font-size: 0.8125rem;
+    color: var(--slds-g-color-on-surface-2, #5c5c5c);
+    margin-top: 0.125rem;
+}
+
+.source-ref {
+    font-size: 0.75rem;
+    color: var(--slds-g-link-color, #0b5cab);
+    margin-top: 0.25rem;
+}
+
+.drawer-footer {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--slds-g-color-border-1, #e5e5e5);
+    background: var(--slds-g-color-surface-container-2, #f3f3f3);
+}
+
+.footer-spacer {
+    flex: 1 1 auto;
+}
+
+/* ── Toast ── */
+.slds-notify_container {
+    z-index: 9100;
+}
