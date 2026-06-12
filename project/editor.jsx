@@ -15,8 +15,8 @@
     const { Icon, Button, Input, Textarea, Select } = window.SalesforceDesignSystem_585a3e;
     const { mode, kind, row, cats } = state; // mode: view|edit|create
     const isICP = kind === 'icp';
-    const category = mode === 'create' ? (state.category || (cats && cats[0]) || 'Pain Point') : (isICP ? 'ICP Attribute' : row.category);
-    const defs = G.FIELD_DEFS[isICP ? 'ICP Attribute' : category] || G.FIELD_DEFS['Pain Point'];
+    const category = mode === 'create' ? (state.category || (cats && cats[0]) || 'Pain Point') : (isICP ? 'ICP Characteristic' : row.category);
+    const defs = G.FIELD_DEFS[isICP ? 'ICP Characteristic' : category] || G.FIELD_DEFS['Pain Point'];
 
     const [editing, setEditing] = React.useState(mode !== 'view');
     const [draftCat, setDraftCat] = React.useState(category);
@@ -26,14 +26,14 @@
       return d;
     });
     React.useEffect(() => {
-      const dd = G.FIELD_DEFS[mode === 'create' && !isICP ? draftCat : (isICP ? 'ICP Attribute' : category)] || [];
+      const dd = G.FIELD_DEFS[mode === 'create' && !isICP ? draftCat : (isICP ? 'ICP Characteristic' : category)] || [];
       const d = {};
       dd.forEach(f => { d[f.key] = fieldToText(row ? row[f.key] : '', f.kind); });
       setDraft(d); setEditing(mode !== 'view');
     }, [row && row.id, mode, draftCat]);
 
-    const activeDefs = G.FIELD_DEFS[mode === 'create' && !isICP ? draftCat : (isICP ? 'ICP Attribute' : category)] || defs;
-    const title = mode === 'create' ? (isICP ? 'New attribute' : 'New row') : (isICP ? row.attribute : row.value);
+    const activeDefs = G.FIELD_DEFS[mode === 'create' && !isICP ? draftCat : (isICP ? 'ICP Characteristic' : category)] || defs;
+    const title = mode === 'create' ? (isICP ? 'New characteristic' : 'New row') : (isICP ? row.characteristic : row.value);
 
     function save() {
       const patch = {};
@@ -43,7 +43,7 @@
     }
 
     // ── Facts (view mode) ──
-    const facts = activeDefs.filter(f => f.key !== (isICP ? 'attribute' : 'value'))
+    const facts = activeDefs.filter(f => f.key !== (isICP ? 'characteristic' : 'value'))
       .map(f => ({ f, v: row ? row[f.key] : null }))
       .filter(x => x.v != null && x.v !== '' && !(Array.isArray(x.v) && !x.v.length));
 
@@ -53,7 +53,7 @@
         // header
         h('div', { style: { padding: '16px 20px 14px', borderBottom: '1px solid var(--color-border)' } },
           h('div', { style: { display: 'flex', alignItems: 'flex-start', gap: 11 } },
-            h(G.CategoryIcon, { category: isICP ? 'ICP Attribute' : (mode === 'create' ? draftCat : category), size: 17, boxed: true }),
+            h(G.CategoryIcon, { category: isICP ? 'ICP Characteristic' : (mode === 'create' ? draftCat : category), size: 17, boxed: true }),
             h('div', { style: { flex: 1, minWidth: 0 } },
               h('div', { style: { font: 'var(--type-overline)', textTransform: 'uppercase', letterSpacing: 'var(--tracking-wider)', color: 'var(--sf-gray-500)' } },
                 isICP ? 'Ideal company profile' : (mode === 'create' ? draftCat : category)),

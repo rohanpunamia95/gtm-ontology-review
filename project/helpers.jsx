@@ -29,7 +29,7 @@
     'Compliance / Security': { icon: 'shield-check',         color: 'var(--sf-success-500)' },
     'Messaging Guardrail':   { icon: 'shield-alert',         color: 'var(--sf-violet-500)' },
     'Competitor / Alternative': { icon: 'git-compare',       color: 'var(--sf-gray-600)' },
-    'ICP Attribute':         { icon: 'building-2',           color: 'var(--sf-blue-500)' },
+    'ICP Characteristic':    { icon: 'building-2',           color: 'var(--sf-blue-500)' },
   };
 
   const SOURCE = {
@@ -78,6 +78,7 @@
       { key: 'valueProp', label: 'Value proposition', kind: 'area' },
       { key: 'outcome', label: 'Business outcome', kind: 'area' },
       { key: 'relatedPersona', label: 'Related persona', kind: 'text' },
+      { key: 'segment', label: 'Segment (blank = all segments)', kind: 'text' },
     ],
     'Value Proposition': [
       { key: 'value', label: 'Value proposition', kind: 'text' },
@@ -86,6 +87,7 @@
       { key: 'capability', label: 'Product capability', kind: 'area' },
       { key: 'outcome', label: 'Business outcome', kind: 'area' },
       { key: 'relatedPersona', label: 'Related persona', kind: 'text' },
+      { key: 'segment', label: 'Segment (blank = all segments)', kind: 'text' },
     ],
     'Signal Playbook': [
       { key: 'value', label: 'Signal / trigger', kind: 'text' },
@@ -95,6 +97,7 @@
       { key: 'painHyp', label: 'Pain hypothesis', kind: 'text' },
       { key: 'angle', label: 'Messaging angle', kind: 'text' },
       { key: 'ttlDays', label: 'TTL (days)', kind: 'number' },
+      { key: 'segment', label: 'Segment (blank = all segments)', kind: 'text' },
     ],
     'Messaging Angle': [
       { key: 'value', label: 'Messaging angle', kind: 'text' },
@@ -103,17 +106,21 @@
       { key: 'personaSegment', label: 'Target persona', kind: 'text' },
       { key: 'hook', label: 'Example hook', kind: 'area' },
       { key: 'avoid', label: 'Avoid saying', kind: 'area' },
+      { key: 'segment', label: 'Segment (blank = all segments)', kind: 'text' },
     ],
     _proof: [
       { key: 'value', label: 'Item', kind: 'text' },
       { key: 'description', label: 'Description', kind: 'area' },
       { key: 'proofType', label: 'Type', kind: 'text' },
       { key: 'useCase', label: 'Use case', kind: 'area' },
+      { key: 'segment', label: 'Segment (blank = all segments)', kind: 'text' },
     ],
-    'ICP Attribute': [
-      { key: 'attribute', label: 'Attribute', kind: 'text' },
+    'ICP Characteristic': [
+      { key: 'characteristic', label: 'Characteristic', kind: 'text' },
+      { key: 'charType', label: 'Type', kind: 'text' },
       { key: 'value', label: 'Value', kind: 'text' },
       { key: 'rationale', label: 'Rationale', kind: 'area' },
+      { key: 'match', label: 'Recent closed-won match (e.g. "7 of 9")', kind: 'text' },
       { key: 'deals', label: 'Example deals', kind: 'list' },
     ],
   };
@@ -151,6 +158,14 @@
       borderRadius: 'var(--radius-full)', background: 'var(--sf-gray-100)', color: 'var(--sf-gray-700)',
       font: 'var(--weight-medium) var(--text-2xs)/1.4 var(--font-sans)', border: '1px solid var(--sf-gray-200)', whiteSpace: 'nowrap' } },
       icon && h(Icon, { name: icon, size: 11 }), children);
+  }
+
+  // Segment applicability chip — absent segment means the row applies to all segments
+  function SegmentChip({ segment }) {
+    if (!segment) return h('span', { style: { font: 'var(--type-label-xs)', color: 'var(--sf-gray-400)' } }, 'All');
+    return h('span', { style: { display: 'inline-flex', alignItems: 'center', padding: '3px 9px',
+      borderRadius: 'var(--radius-full)', background: 'var(--sf-blue-50)', color: 'var(--sf-blue-700)',
+      font: 'var(--weight-medium) var(--text-2xs)/1.4 var(--font-sans)', border: '1px solid var(--sf-blue-200)', whiteSpace: 'nowrap' } }, segment);
   }
 
   function SourceLine({ s }) {
@@ -202,5 +217,5 @@
   }
 
   Object.assign(G, { CONF, CLAIM, CATEGORY, SOURCE, TABS, FIELD_DEFS,
-    ConfidenceChip, ClaimChip, CategoryIcon, Pill, SourceLine, TopNav, Bullets });
+    ConfidenceChip, ClaimChip, CategoryIcon, Pill, SegmentChip, SourceLine, TopNav, Bullets });
 })();

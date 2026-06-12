@@ -17,14 +17,16 @@
       [m.pagesAnalyzed, 'web pages'], [m.dealsAnalyzed, 'closed-won deals'],
     ];
     return h('div', { style: { marginBottom: 14 } },
-      h('div', { style: { marginBottom: 10 } }, h(Breadcrumb, { items: ['Agent Studio', 'GTM Ontology'] })),
+      h('div', { style: { marginBottom: 10 } }, h(Breadcrumb, { items: ['Agent Studio', 'Agent Grounding'] })),
       h('div', { style: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' } },
         h('div', null,
           h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } },
-            h('h1', { style: { font: 'var(--type-h2)', color: 'var(--sf-gray-900)', margin: 0 } }, 'GTM Ontology'),
+            h('h1', { style: { font: 'var(--type-h2)', color: 'var(--sf-gray-900)', margin: 0 } }, 'Agent Grounding'),
             h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: 5, padding: '3px 10px', borderRadius: 'var(--radius-full)',
               background: 'var(--sf-violet-100)', color: 'var(--sf-violet-700)', font: 'var(--weight-semibold) var(--text-2xs)/1.4 var(--font-sans)' } },
               h(Icon, { name: 'sparkles', size: 11 }), 'Auto-learned')),
+          h('div', { style: { font: 'var(--type-body-sm)', color: 'var(--sf-gray-600)', marginTop: 6, maxWidth: 720, lineHeight: 1.5 } },
+            'Everything here was learned by your agent from your calls, emails, CRM, and website — and keeps updating as new deals close. Review it and edit anything; this is a living repository.'),
           h('div', { style: { display: 'flex', alignItems: 'center', gap: 6, marginTop: 6, flexWrap: 'wrap', font: 'var(--type-body-sm)', color: 'var(--sf-gray-600)' } },
             h('span', null, data.customer),
             h('span', { style: { color: 'var(--sf-gray-300)' } }, '\u00b7'),
@@ -99,11 +101,22 @@
         h('span', { style: { font: 'var(--type-label-xs)', color: 'var(--sf-gray-600)', fontVariantNumeric: 'tabular-nums' } }, (r.sources || []).length)); } };
 
     let cols;
+    const matchBar = r => {
+      if (!r.match) return h('span', { style: { font: 'var(--type-label-xs)', color: 'var(--sf-gray-400)' } }, '\u2014');
+      const m = /^(\d+)\s+of\s+(\d+)/.exec(r.match);
+      const pct = m ? Math.round((+m[1] / +m[2]) * 100) : 0;
+      return h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+        h('div', { style: { width: 64, height: 6, borderRadius: 'var(--radius-full)', background: 'var(--sf-gray-200)', overflow: 'hidden', flexShrink: 0 } },
+          h('div', { style: { width: pct + '%', height: '100%', borderRadius: 'var(--radius-full)', background: 'var(--sf-blue-500)' } })),
+        h('span', { style: { font: 'var(--type-label-xs)', color: 'var(--sf-gray-700)', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' } }, r.match));
+    };
+    const segCol = { key: 'segment', label: 'Segment', w: 100, render: r => h(G.SegmentChip, { segment: r.segment }) };
     if (tabKey === 'icp') cols = [
-      { key: 'attribute', label: 'Attribute', w: 180, render: r => h('span', { style: { font: 'var(--type-label-sm)', color: 'var(--sf-gray-900)', ...truncate } }, r.attribute) },
-      { key: 'value', label: 'Value', w: 230, render: r => h('span', { style: { font: 'var(--type-label-md)', color: r.segmentId === 'poor_fit' ? 'var(--sf-error-700)' : 'var(--sf-gray-900)', ...clamp2 } }, r.value) },
-      { key: 'rationale', label: 'Rationale', w: 280, grow: 1, render: r => txt(r.rationale, clamp2) },
-      { key: 'deals', label: 'Example deals', w: 210, render: r => h('div', { style: { display: 'flex', gap: 5, flexWrap: 'wrap' } }, (r.deals || []).slice(0, 2).map(d => h(G.Pill, { key: d, icon: 'trophy' }, d))) },
+      { key: 'charType', label: 'Type', w: 140, render: r => h('span', { style: { font: 'var(--type-label-sm)', color: r.segmentId === 'poor_fit' ? 'var(--sf-error-700)' : 'var(--sf-gray-900)', ...truncate } }, r.segmentId === 'poor_fit' ? r.value : (r.charType || '\u2014')) },
+      { key: 'value', label: 'Value', w: 260, render: r => h('span', { style: { font: 'var(--type-label-md)', color: 'var(--sf-gray-900)', ...clamp2 } }, r.segmentId === 'poor_fit' ? r.characteristic : r.value) },
+      { key: 'rationale', label: 'Rationale', w: 260, grow: 1, render: r => txt(r.rationale, clamp2) },
+      { key: 'match', label: 'Recent C/W deals', w: 150, render: matchBar },
+      { key: 'deals', label: 'Example deals', w: 200, render: r => h('div', { style: { display: 'flex', gap: 5, flexWrap: 'wrap' } }, (r.deals || []).slice(0, 2).map(d => h(G.Pill, { key: d, icon: 'trophy' }, d))) },
     ];
     else if (tabKey === 'who') cols = [
       { key: 'value', label: 'Persona', w: 200, grow: 1, render: valueCell },
@@ -112,14 +125,14 @@
       { key: 'responsibilities', label: 'Owns', w: 210, render: r => txt(r.responsibilities, clamp2) },
       { key: 'caresAbout', label: 'Cares about', w: 220, render: r => txt((r.caresAbout || []).join(' \u00b7 '), clamp2) },
       { key: 'callMentions', label: 'Calls', w: 70, render: r => txt(r.callMentions ? String(r.callMentions) : '\u2014', { fontVariantNumeric: 'tabular-nums' }) },
-      conf, sources,
+      segCol, conf, sources,
     ];
     else if (tabKey === 'why') cols = [
       { key: 'value', label: 'Item', w: 210, grow: 1, render: valueCell },
       { key: 'whyMatters', label: 'Why it matters', w: 250, render: r => txt(r.whyMatters, clamp2) },
       { key: 'capability', label: 'Product capability', w: 230, render: r => txt(r.capability, clamp2) },
       { key: 'relatedPersona', label: 'Persona', w: 150, render: r => txt(r.relatedPersona, truncate) },
-      conf, sources,
+      segCol, conf, sources,
     ];
     else if (tabKey === 'when') cols = [
       { key: 'value', label: 'Signal / trigger', w: 210, grow: 1, render: valueCell },
@@ -127,28 +140,28 @@
       { key: 'personaSegment', label: 'Target persona', w: 180, render: r => txt(r.personaSegment, clamp2) },
       { key: 'angle', label: 'Messaging angle', w: 230, render: r => txt(r.angle, clamp2) },
       { key: 'ttl', label: 'TTL', w: 70, render: r => txt(r.ttlDays ? r.ttlDays + 'd' : '\u2014') },
-      conf, sources,
+      segCol, conf, sources,
     ];
     else if (tabKey === 'what') cols = [
       { key: 'value', label: 'Messaging angle', w: 230, grow: 1, render: valueCell },
       { key: 'useWhen', label: 'Use when', w: 230, render: r => txt(r.useWhen, clamp2) },
       { key: 'hook', label: 'Example hook', w: 270, render: r => txt(r.hook, clamp2) },
       { key: 'avoid', label: 'Avoid saying', w: 210, render: r => txt(r.avoid, clamp2) },
-      conf, sources,
+      segCol, conf, sources,
     ];
     else if (tabKey === 'proof') cols = [
       { key: 'proofType', label: 'Type', w: 175, render: r => h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } }, h(G.CategoryIcon, { category: r.category, size: 13, boxed: true }), h('span', { style: { font: 'var(--type-label-sm)', color: 'var(--sf-gray-800)', ...truncate } }, r.proofType || r.category)) },
       { key: 'value', label: 'Item', w: 250, grow: 1, render: r => txt(r.value, { color: 'var(--sf-gray-900)', font: 'var(--type-label-sm)', ...clamp2 }) },
       { key: 'description', label: 'Description', w: 280, render: r => txt(r.description, clamp2) },
       { key: 'useCase', label: 'Use case', w: 220, render: r => txt(r.useCase, clamp2) },
-      conf, sources,
+      segCol, conf, sources,
     ];
     else if (tabKey === 'guard') cols = [
       { key: 'proofType', label: 'Type', w: 165, render: r => h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } }, h(G.CategoryIcon, { category: r.category, size: 13, boxed: true }), h('span', { style: { font: 'var(--type-label-sm)', color: 'var(--sf-gray-800)', ...truncate } }, r.category === 'Messaging Guardrail' ? 'Guardrail' : 'Competitor')) },
       { key: 'value', label: 'Rule', w: 260, grow: 1, render: r => txt(r.value, { color: 'var(--sf-gray-900)', font: 'var(--type-label-sm)', ...clamp2 }) },
       { key: 'description', label: 'Description', w: 320, render: r => txt(r.description, clamp2) },
       { key: 'personaSegment', label: 'Applies to', w: 190, render: r => txt(r.personaSegment, clamp2) },
-      conf, sources,
+      segCol, conf, sources,
     ];
     else cols = [ // all
       { key: 'category', label: 'Category', w: 165, render: r => h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } }, h(G.CategoryIcon, { category: r.category, size: 13, boxed: true }), h('span', { style: { font: 'var(--type-label-xs)', color: 'var(--sf-gray-700)', ...truncate } }, r.category)) },

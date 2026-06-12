@@ -23,7 +23,7 @@
 
     const data = window.GTM_DATA;
     const motions = data.motions;
-    const plays = data.plays || [];
+    const plays = []; // GTM motions hidden for MVP — re-enable with: data.plays || []
     const opts = { density: t.density, showConfidence: t.showConfidence, showSourceIcons: t.showSourceIcons };
 
     const flash = (cfg) => { setToast(cfg); clearTimeout(window.__gtmToast); window.__gtmToast = setTimeout(() => setToast(null), 2800); };
@@ -78,7 +78,7 @@
         onAdd: (segmentId) => setEditor({ mode: 'create', kind: 'icp', segmentId }) });
     } else {
       const base = tab === 'all' ? mRows : mRows.filter(r => tabDef.cats.includes(r.category));
-      const cats = tab === 'all' ? Object.keys(G.CATEGORY).filter(c => c !== 'ICP Attribute') : tabDef.cats;
+      const cats = tab === 'all' ? Object.keys(G.CATEGORY).filter(c => c !== 'ICP Characteristic') : tabDef.cats;
       body = h('div', null,
         h(G.Toolbar, { count: base.length, onAdd: openAdd('row', cats), addLabel: tab === 'who' ? 'Add persona' : 'Add row' }),
         h(G.DataTable, { rows: base, tabKey: tab, opts, onRowClick: openView('row'), onEditRow: openEdit('row') }));

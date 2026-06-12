@@ -8,7 +8,7 @@
     callsAnalyzed: '1,038',
     emailsAnalyzed: '4,210',
     pagesAnalyzed: '312',
-    dealsAnalyzed: '47',
+    dealsAnalyzed: '470',
   };
 
   // ── Persona enrichment ─────────────────────────────────────────────────

@@ -3017,7 +3017,7 @@ __ds_ns.Tabs = __ds_scope.Tabs;
     callsAnalyzed: '1,038',
     emailsAnalyzed: '4,210',
     pagesAnalyzed: '312',
-    dealsAnalyzed: '47',
+    dealsAnalyzed: '470',
   };
 
   // ── Persona enrichment ─────────────────────────────────────────────────
@@ -3312,7 +3312,8 @@ __ds_ns.Tabs = __ds_scope.Tabs;
 <script>/* icp-segments */ // icp-segments.js — segment-based Ideal Company Profile model.
 // Loads after data2.js; REPLACES the flat D.icp rows with the segment model:
 //   Layer 1: canonical segments (SMB / MM / ENT) learned from CRM structure
-//   Layer 2: sweet-spot attributes inferred from each segment's closed-won deals
+//   Layer 2: sweet-spot characteristics inferred from each segment's closed-won deals,
+//            each backtested against that segment's recent closed-won deals (match = "n of N")
 (function () {
   const D = window.GTM_DATA;
 
@@ -3320,134 +3321,156 @@ __ds_ns.Tabs = __ds_scope.Tabs;
   D.icpSegMeta = {
     data_360_ai_readiness: {
       learnedFrom: 'Account segment field + territory model',
-      insight: '3 of 5 mid-market wins resemble Enterprise deals (6+ stakeholders, 6-month cycles). Segment boundaries may be drifting \u2014 worth a review with RevOps.',
       segments: [
-        { id: 'ent', name: 'Enterprise', deals: 9, medianAcv: '$520K' },
-        { id: 'mm', name: 'Mid-market', deals: 5, medianAcv: '$260K' },
-        { id: 'smb', name: 'SMB', deals: 1, medianAcv: '\u2014' },
+        { id: 'ent', name: 'Enterprise', deals: 90, medianAcv: '$520K' },
+        { id: 'mm', name: 'Mid-market', deals: 50, medianAcv: '$260K' },
+        { id: 'smb', name: 'SMB', deals: 4, medianAcv: '\u2014' },
       ] },
     sales_cloud_rep_productivity: {
       learnedFrom: 'Account segment field + territory model',
       segments: [
-        { id: 'ent', name: 'Enterprise', deals: 5, medianAcv: '$450K' },
-        { id: 'mm', name: 'Mid-market', deals: 7, medianAcv: '$190K' },
+        { id: 'ent', name: 'Enterprise', deals: 50, medianAcv: '$450K' },
+        { id: 'mm', name: 'Mid-market', deals: 70, medianAcv: '$190K' },
       ] },
     agentforce_sales_automation: {
       learnedFrom: 'Account segment field + territory model',
       segments: [
-        { id: 'ent', name: 'Enterprise', deals: 5, medianAcv: '$220K' },
-        { id: 'mm', name: 'Mid-market', deals: 3, medianAcv: '$110K' },
+        { id: 'ent', name: 'Enterprise', deals: 50, medianAcv: '$220K' },
+        { id: 'mm', name: 'Mid-market', deals: 30, medianAcv: '$110K' },
       ] },
     service_cloud_contact_center: {
       learnedFrom: 'Account segment field + territory model',
       segments: [
-        { id: 'ent', name: 'Enterprise', deals: 8, medianAcv: '$390K' },
-        { id: 'mm', name: 'Mid-market', deals: 3, medianAcv: '$210K' },
+        { id: 'ent', name: 'Enterprise', deals: 80, medianAcv: '$390K' },
+        { id: 'mm', name: 'Mid-market', deals: 30, medianAcv: '$210K' },
       ] },
     mulesoft_integration_modernization: {
       learnedFrom: 'Account segment field + territory model',
       segments: [
-        { id: 'ent', name: 'Enterprise', deals: 7, medianAcv: '$560K' },
-        { id: 'mm', name: 'Mid-market', deals: 2, medianAcv: '\u2014' },
+        { id: 'ent', name: 'Enterprise', deals: 70, medianAcv: '$560K' },
+        { id: 'mm', name: 'Mid-market', deals: 20, medianAcv: '\u2014' },
       ] },
   };
 
-  // Flat attribute rows. segmentId: 'ent' | 'mm' | 'smb' | 'poor_fit' (shared).
+  // Flat characteristic rows. segmentId: 'ent' | 'mm' | 'smb' | 'poor_fit' (shared).
+  // charType: Firmographic | Technographic | Signal | Buying behavior | Deal shape.
+  // match: "n of N" — backtest against the segment's recent closed-won deals.
   // isDefinition rows carry the segment's learned definition.
   let n = 0;
-  const A = (motionId, segmentId, attribute, value, rationale, deals, isDefinition) =>
-    ({ id: 'icp_' + motionId.slice(0, 8) + '_' + (++n), motionId, segmentId, attribute, value, rationale, deals: deals || [], isDefinition: !!isDefinition });
+  const A = (motionId, segmentId, charType, characteristic, value, rationale, match, deals, isDefinition) =>
+    ({ id: 'icp_' + motionId.slice(0, 8) + '_' + (++n), motionId, segmentId, charType, characteristic, value, rationale, match: match || null, deals: deals || [], isDefinition: !!isDefinition });
 
   D.icp = [
     // ═══ Data 360 ═══
-    A('data_360_ai_readiness', 'ent', 'Definition', 'Enterprise \u2014 2,000+ employees, named-account territories, field sales',
-      'Learned from the Account segment picklist and territory model', [], true),
-    A('data_360_ai_readiness', 'ent', 'Industries', 'Retail, Financial services, Healthcare', '7 of 9 Enterprise wins', ['United Oil & Gas \u00b7 $740K']),
-    A('data_360_ai_readiness', 'ent', 'Data stack', 'Snowflake or Databricks in place', '8 of 9 wins; zero-copy access cited as decisive in 6.', ['Pyramid Construction \u00b7 $520K']),
-    A('data_360_ai_readiness', 'ent', 'AI initiative', 'Funded GenAI program in flight', '9 of 9 had a named, budgeted program at first call.', ['Grand Hotels & Resorts \u00b7 $610K']),
-    A('data_360_ai_readiness', 'ent', 'Buying committee', 'CDO + CIO + security review', 'Median 7 stakeholders; security review adds 3\u20136 weeks.', []),
-    A('data_360_ai_readiness', 'ent', 'Sales cycle', '5 \u2013 8 months', 'Median 6.0 months.', []),
-    A('data_360_ai_readiness', 'ent', 'Deal size', '$350K \u2013 $750K ACV', 'Median $520K.', []),
-    A('data_360_ai_readiness', 'mm', 'Definition', 'Mid-market \u2014 200\u20132,000 employees, geo territories, inside + field',
-      'Learned from the Account segment picklist and territory model', [], true),
-    A('data_360_ai_readiness', 'mm', 'Industries', 'Retail, Technology', '4 of 5 mid-market wins', ['Northern Trail Outfitters \u00b7 $310K']),
-    A('data_360_ai_readiness', 'mm', 'Data stack', 'Cloud warehouse, lean data team', '3 of 5; implementation support was decisive.', ['Burlington Textiles \u00b7 $220K']),
-    A('data_360_ai_readiness', 'mm', 'Trigger', 'First senior data hire', '4 of 5 wins followed a new data leader.', ['GenePoint \u00b7 $180K']),
-    A('data_360_ai_readiness', 'mm', 'Buying committee', 'Data leader + RevOps', 'Median 4 stakeholders.', []),
-    A('data_360_ai_readiness', 'mm', 'Sales cycle', '3 \u2013 4 months', 'Median 3.4 months.', []),
-    A('data_360_ai_readiness', 'mm', 'Deal size', '$150K \u2013 $350K ACV', 'Median $260K.', []),
-    A('data_360_ai_readiness', 'smb', 'Definition', 'SMB \u2014 under 200 employees, pooled territories, inside sales',
-      'Learned from the Account segment picklist and territory model', [], true),
-    A('data_360_ai_readiness', 'poor_fit', 'No data engineering function', 'Avoid', 'Implementations stall without a customer-side data owner.', []),
-    A('data_360_ai_readiness', 'poor_fit', 'Warehouse migration mid-flight', 'Defer', 'Two stalled deals; revisit once the migration lands.', []),
-    A('data_360_ai_readiness', 'poor_fit', 'Single-brand SMB without analytics', 'Avoid', 'Zero wins; recent losses cite price.', []),
+    A('data_360_ai_readiness', 'ent', null, 'Definition', 'Enterprise \u2014 2,000+ employees, named-account territories, field sales',
+      'Learned from the Account segment picklist and territory model', null, [], true),
+    A('data_360_ai_readiness', 'ent', 'Firmographic', 'Industries', 'Retail, Financial services, Healthcare', 'Verticals with heavy first-party data estates dominate wins.', '71 of 90', ['United Oil & Gas \u00b7 $740K']),
+    A('data_360_ai_readiness', 'ent', 'Technographic', 'Data stack', 'Snowflake or Databricks in place', 'Zero-copy access cited as decisive in 54 wins.', '78 of 90', ['Pyramid Construction \u00b7 $520K']),
+    A('data_360_ai_readiness', 'ent', 'Signal', 'AI initiative', 'Funded GenAI program in flight', 'A named, budgeted program existed at first call in nearly every win.', '86 of 90', ['Grand Hotels & Resorts \u00b7 $610K']),
+    A('data_360_ai_readiness', 'ent', 'Buying behavior', 'Buying committee', 'CDO + CIO + security review', 'Median 7 stakeholders; security review adds 3\u20136 weeks.', '75 of 90', []),
+    A('data_360_ai_readiness', 'ent', 'Deal shape', 'Sales cycle', '5 \u2013 8 months', 'Median 6.0 months.', '68 of 90', []),
+    A('data_360_ai_readiness', 'ent', 'Deal shape', 'Deal size', '$350K \u2013 $750K ACV', 'Median $520K.', '66 of 90', []),
+    A('data_360_ai_readiness', 'mm', null, 'Definition', 'Mid-market \u2014 200\u20132,000 employees, geo territories, inside + field',
+      'Learned from the Account segment picklist and territory model', null, [], true),
+    A('data_360_ai_readiness', 'mm', 'Firmographic', 'Industries', 'Retail, Technology', 'Digital-native and omnichannel retailers over-index.', '39 of 50', ['Northern Trail Outfitters \u00b7 $310K']),
+    A('data_360_ai_readiness', 'mm', 'Technographic', 'Data stack', 'Cloud warehouse, lean data team', 'Implementation support was decisive where the team was small.', '31 of 50', ['Burlington Textiles \u00b7 $220K']),
+    A('data_360_ai_readiness', 'mm', 'Signal', 'Trigger', 'First senior data hire', 'Wins followed a new data leader within two quarters.', '38 of 50', ['GenePoint \u00b7 $180K']),
+    A('data_360_ai_readiness', 'mm', 'Buying behavior', 'Buying committee', 'Data leader + RevOps', 'Median 4 stakeholders.', '36 of 50', []),
+    A('data_360_ai_readiness', 'mm', 'Deal shape', 'Sales cycle', '3 \u2013 4 months', 'Median 3.4 months.', '40 of 50', []),
+    A('data_360_ai_readiness', 'mm', 'Deal shape', 'Deal size', '$150K \u2013 $350K ACV', 'Median $260K.', '37 of 50', []),
+    A('data_360_ai_readiness', 'smb', null, 'Definition', 'SMB \u2014 under 200 employees, pooled territories, inside sales',
+      'Learned from the Account segment picklist and territory model', null, [], true),
+    A('data_360_ai_readiness', 'poor_fit', null, 'No data engineering function', 'Avoid', 'Implementations stall without a customer-side data owner.', null, []),
+    A('data_360_ai_readiness', 'poor_fit', null, 'Warehouse migration mid-flight', 'Defer', 'Stalled deals cluster here; revisit once the migration lands.', null, []),
+    A('data_360_ai_readiness', 'poor_fit', null, 'Single-brand SMB without analytics', 'Avoid', 'Zero wins; recent losses cite price.', null, []),
 
     // ═══ Sales Cloud ═══
-    A('sales_cloud_rep_productivity', 'ent', 'Definition', 'Enterprise \u2014 2,000+ employees, named-account territories, field sales',
-      'Learned from the Account segment picklist and territory model', [], true),
-    A('sales_cloud_rep_productivity', 'ent', 'Sales org size', '1,000+ quota-carrying reps', '4 of 5 wins; median 1,400 reps.', []),
-    A('sales_cloud_rep_productivity', 'ent', 'Industries', 'Manufacturing, Logistics', '4 of 5 Enterprise wins', ['Express Logistics \u00b7 $270K']),
-    A('sales_cloud_rep_productivity', 'ent', 'Trigger', 'New CRO within first two quarters', '4 of 5 wins started within 6 months of a CRO change.', []),
-    A('sales_cloud_rep_productivity', 'ent', 'Buying committee', 'CRO + IT + procurement', 'Median 6 stakeholders.', []),
-    A('sales_cloud_rep_productivity', 'ent', 'Sales cycle', '5 \u2013 7 months', 'Median 5.8 months.', []),
-    A('sales_cloud_rep_productivity', 'ent', 'Deal size', '$300K \u2013 $600K ACV', 'Median $450K.', []),
-    A('sales_cloud_rep_productivity', 'mm', 'Definition', 'Mid-market \u2014 200\u20132,000 employees, geo territories, inside + field',
-      'Learned from the Account segment picklist and territory model', [], true),
-    A('sales_cloud_rep_productivity', 'mm', 'Sales org size', '50 \u2013 200 quota-carrying reps', 'Median 140 reps across 7 wins.', ['Dickenson plc \u00b7 $390K']),
-    A('sales_cloud_rep_productivity', 'mm', 'Industries', 'SaaS, Business services', '6 of 7 mid-market wins', []),
-    A('sales_cloud_rep_productivity', 'mm', 'Champion', 'RevOps-led evaluation', '6 of 7; RevOps is the working champion.', []),
-    A('sales_cloud_rep_productivity', 'mm', 'Sales cycle', '~3 months', 'Median 3.1 months.', []),
-    A('sales_cloud_rep_productivity', 'mm', 'Deal size', '$120K \u2013 $250K ACV', 'Median $190K.', []),
-    A('sales_cloud_rep_productivity', 'poor_fit', 'Teams under 25 reps', 'Avoid', 'ROI math fails below 25 reps; 5 recent losses cite price.', []),
-    A('sales_cloud_rep_productivity', 'poor_fit', 'Fully outsourced sales model', 'Avoid', 'No internal process to automate.', []),
+    A('sales_cloud_rep_productivity', 'ent', null, 'Definition', 'Enterprise \u2014 2,000+ employees, named-account territories, field sales',
+      'Learned from the Account segment picklist and territory model', null, [], true),
+    A('sales_cloud_rep_productivity', 'ent', 'Firmographic', 'Sales org size', '1,000+ quota-carrying reps', 'Median 1,400 reps across wins.', '41 of 50', []),
+    A('sales_cloud_rep_productivity', 'ent', 'Firmographic', 'Industries', 'Manufacturing, Logistics', 'Field-heavy sales orgs with long-tenured rep populations.', '38 of 50', ['Express Logistics \u00b7 $270K']),
+    A('sales_cloud_rep_productivity', 'ent', 'Signal', 'Trigger', 'New CRO within first two quarters', 'Wins started within 6 months of a CRO change.', '36 of 50', []),
+    A('sales_cloud_rep_productivity', 'ent', 'Buying behavior', 'Buying committee', 'CRO + IT + procurement', 'Median 6 stakeholders.', '39 of 50', []),
+    A('sales_cloud_rep_productivity', 'ent', 'Deal shape', 'Sales cycle', '5 \u2013 7 months', 'Median 5.8 months.', '40 of 50', []),
+    A('sales_cloud_rep_productivity', 'ent', 'Deal shape', 'Deal size', '$300K \u2013 $600K ACV', 'Median $450K.', '31 of 50', []),
+    A('sales_cloud_rep_productivity', 'mm', null, 'Definition', 'Mid-market \u2014 200\u20132,000 employees, geo territories, inside + field',
+      'Learned from the Account segment picklist and territory model', null, [], true),
+    A('sales_cloud_rep_productivity', 'mm', 'Firmographic', 'Sales org size', '50 \u2013 200 quota-carrying reps', 'Median 140 reps.', '60 of 70', ['Dickenson plc \u00b7 $390K']),
+    A('sales_cloud_rep_productivity', 'mm', 'Firmographic', 'Industries', 'SaaS, Business services', 'Recurring-revenue models with inside-sales motions.', '58 of 70', []),
+    A('sales_cloud_rep_productivity', 'mm', 'Buying behavior', 'Champion', 'RevOps-led evaluation', 'RevOps is the working champion.', '61 of 70', []),
+    A('sales_cloud_rep_productivity', 'mm', 'Deal shape', 'Sales cycle', '~3 months', 'Median 3.1 months.', '52 of 70', []),
+    A('sales_cloud_rep_productivity', 'mm', 'Deal shape', 'Deal size', '$120K \u2013 $250K ACV', 'Median $190K.', '49 of 70', []),
+    A('sales_cloud_rep_productivity', 'poor_fit', null, 'Teams under 25 reps', 'Avoid', 'ROI math fails below 25 reps; recent losses cite price.', null, []),
+    A('sales_cloud_rep_productivity', 'poor_fit', null, 'Fully outsourced sales model', 'Avoid', 'No internal process to automate.', null, []),
 
     // ═══ Agentforce ═══
-    A('agentforce_sales_automation', 'ent', 'Definition', 'Enterprise \u2014 2,000+ employees, named-account territories, field sales',
-      'Learned from the Account segment picklist and territory model', [], true),
-    A('agentforce_sales_automation', 'ent', 'CRM maturity', 'Mature Sales Cloud org with clean data', 'Stated prerequisite in 5 of 5 wins.', ['Grand Hotels & Resorts \u00b7 $610K']),
-    A('agentforce_sales_automation', 'ent', 'Budget', 'Funded AI budget line', '5 of 5; never displacement of headcount budget.', []),
-    A('agentforce_sales_automation', 'ent', 'Sponsor', 'C-level exec sponsor', 'Director-led evaluations stalled.', []),
-    A('agentforce_sales_automation', 'ent', 'Sales cycle', '3 \u2013 4 months', 'Land one use case, expand after first measurable win.', []),
-    A('agentforce_sales_automation', 'ent', 'Deal size', '$150K \u2013 $300K initial ACV', 'Median $220K initial.', []),
-    A('agentforce_sales_automation', 'mm', 'Definition', 'Mid-market \u2014 200\u20132,000 employees, geo territories, inside + field',
-      'Learned from the Account segment picklist and territory model', [], true),
-    A('agentforce_sales_automation', 'mm', 'Entry point', 'Single use case land', '3 of 3 wins landed on one workflow.', ['Cloud Kicks \u00b7 $480K']),
-    A('agentforce_sales_automation', 'mm', 'Sponsor', 'Founder or CRO', 'Smaller orgs move only with top-down sponsorship.', []),
-    A('agentforce_sales_automation', 'mm', 'Deal size', '$80K \u2013 $150K initial ACV', 'Median $110K initial.', []),
-    A('agentforce_sales_automation', 'poor_fit', 'Messy CRM data', 'Defer', 'Route to the Sales Cloud hygiene motion first.', []),
-    A('agentforce_sales_automation', 'poor_fit', 'No legal framework for AI outreach', 'Defer', 'Two deals stalled in legal for 90+ days.', []),
+    A('agentforce_sales_automation', 'ent', null, 'Definition', 'Enterprise \u2014 2,000+ employees, named-account territories, field sales',
+      'Learned from the Account segment picklist and territory model', null, [], true),
+    A('agentforce_sales_automation', 'ent', 'Technographic', 'CRM maturity', 'Mature Sales Cloud org with clean data', 'Stated prerequisite in nearly every win.', '47 of 50', ['Grand Hotels & Resorts \u00b7 $610K']),
+    A('agentforce_sales_automation', 'ent', 'Signal', 'Budget', 'Funded AI budget line', 'Never displacement of headcount budget.', '46 of 50', []),
+    A('agentforce_sales_automation', 'ent', 'Buying behavior', 'Sponsor', 'C-level exec sponsor', 'Director-led evaluations stalled.', '40 of 50', []),
+    A('agentforce_sales_automation', 'ent', 'Deal shape', 'Sales cycle', '3 \u2013 4 months', 'Land one use case, expand after first measurable win.', '38 of 50', []),
+    A('agentforce_sales_automation', 'ent', 'Deal shape', 'Deal size', '$150K \u2013 $300K initial ACV', 'Median $220K initial.', '39 of 50', []),
+    A('agentforce_sales_automation', 'mm', null, 'Definition', 'Mid-market \u2014 200\u20132,000 employees, geo territories, inside + field',
+      'Learned from the Account segment picklist and territory model', null, [], true),
+    A('agentforce_sales_automation', 'mm', 'Deal shape', 'Entry point', 'Single use case land', 'Nearly every win landed on one workflow.', '28 of 30', ['Cloud Kicks \u00b7 $480K']),
+    A('agentforce_sales_automation', 'mm', 'Buying behavior', 'Sponsor', 'Founder or CRO', 'Smaller orgs move only with top-down sponsorship.', '27 of 30', []),
+    A('agentforce_sales_automation', 'mm', 'Deal shape', 'Deal size', '$80K \u2013 $150K initial ACV', 'Median $110K initial.', '21 of 30', []),
+    A('agentforce_sales_automation', 'poor_fit', null, 'Messy CRM data', 'Defer', 'Route to the Sales Cloud hygiene motion first.', null, []),
+    A('agentforce_sales_automation', 'poor_fit', null, 'No legal framework for AI outreach', 'Defer', 'Deals stall in legal for 90+ days.', null, []),
 
     // ═══ Service Cloud ═══
-    A('service_cloud_contact_center', 'ent', 'Definition', 'Enterprise \u2014 2,000+ employees, named-account territories, field sales',
-      'Learned from the Account segment picklist and territory model', [], true),
-    A('service_cloud_contact_center', 'ent', 'Contact center size', '300+ seats', 'Median 320 seats across 8 wins.', ['Grand Hotels & Resorts \u00b7 $610K']),
-    A('service_cloud_contact_center', 'ent', 'Industries', 'Hospitality, Telecom, Utilities', '7 of 8 Enterprise wins are high-volume B2C.', []),
-    A('service_cloud_contact_center', 'ent', 'Mandate', 'Cost-to-serve reduction program', '7 of 8 had a stated cost mandate.', []),
-    A('service_cloud_contact_center', 'ent', 'Buying committee', 'VP Support + IT + procurement', 'Procurement involved from week one in 7 of 8.', []),
-    A('service_cloud_contact_center', 'ent', 'Sales cycle', '5 \u2013 6 months', 'Median 5.2 months.', []),
-    A('service_cloud_contact_center', 'ent', 'Deal size', '$300K \u2013 $600K ACV', 'Median $390K.', []),
-    A('service_cloud_contact_center', 'mm', 'Definition', 'Mid-market \u2014 200\u20132,000 employees, geo territories, inside + field',
-      'Learned from the Account segment picklist and territory model', [], true),
-    A('service_cloud_contact_center', 'mm', 'Contact center size', '100 \u2013 300 seats', 'All 3 mid-market wins.', []),
-    A('service_cloud_contact_center', 'mm', 'Current stack', 'Aging helpdesk displacement', '3 of 3 displaced an end-of-life system.', []),
-    A('service_cloud_contact_center', 'mm', 'Sales cycle', '3 \u2013 4 months', 'Median 3.6 months.', []),
-    A('service_cloud_contact_center', 'mm', 'Deal size', '$150K \u2013 $300K ACV', 'Median $210K.', []),
-    A('service_cloud_contact_center', 'poor_fit', 'Under 25 support seats', 'Avoid', 'No recent wins below 25 seats.', []),
-    A('service_cloud_contact_center', 'poor_fit', 'Pure email support', 'Avoid', 'Deflection ROI requires multi-channel volume.', []),
+    A('service_cloud_contact_center', 'ent', null, 'Definition', 'Enterprise \u2014 2,000+ employees, named-account territories, field sales',
+      'Learned from the Account segment picklist and territory model', null, [], true),
+    A('service_cloud_contact_center', 'ent', 'Firmographic', 'Contact center size', '300+ seats', 'Median 320 seats across wins.', '70 of 80', ['Grand Hotels & Resorts \u00b7 $610K']),
+    A('service_cloud_contact_center', 'ent', 'Firmographic', 'Industries', 'Hospitality, Telecom, Utilities', 'High-volume B2C support operations.', '68 of 80', []),
+    A('service_cloud_contact_center', 'ent', 'Signal', 'Mandate', 'Cost-to-serve reduction program', 'A stated cost mandate existed before first call.', '66 of 80', []),
+    A('service_cloud_contact_center', 'ent', 'Buying behavior', 'Buying committee', 'VP Support + IT + procurement', 'Procurement involved from week one.', '69 of 80', []),
+    A('service_cloud_contact_center', 'ent', 'Deal shape', 'Sales cycle', '5 \u2013 6 months', 'Median 5.2 months.', '61 of 80', []),
+    A('service_cloud_contact_center', 'ent', 'Deal shape', 'Deal size', '$300K \u2013 $600K ACV', 'Median $390K.', '58 of 80', []),
+    A('service_cloud_contact_center', 'mm', null, 'Definition', 'Mid-market \u2014 200\u20132,000 employees, geo territories, inside + field',
+      'Learned from the Account segment picklist and territory model', null, [], true),
+    A('service_cloud_contact_center', 'mm', 'Firmographic', 'Contact center size', '100 \u2013 300 seats', 'Nearly every mid-market win in range.', '27 of 30', []),
+    A('service_cloud_contact_center', 'mm', 'Technographic', 'Current stack', 'Aging helpdesk displacement', 'Most wins displaced an end-of-life system.', '26 of 30', []),
+    A('service_cloud_contact_center', 'mm', 'Deal shape', 'Sales cycle', '3 \u2013 4 months', 'Median 3.6 months.', '25 of 30', []),
+    A('service_cloud_contact_center', 'mm', 'Deal shape', 'Deal size', '$150K \u2013 $300K ACV', 'Median $210K.', '20 of 30', []),
+    A('service_cloud_contact_center', 'poor_fit', null, 'Under 25 support seats', 'Avoid', 'No recent wins below 25 seats.', null, []),
+    A('service_cloud_contact_center', 'poor_fit', null, 'Pure email support', 'Avoid', 'Deflection ROI requires multi-channel volume.', null, []),
 
     // ═══ MuleSoft ═══
-    A('mulesoft_integration_modernization', 'ent', 'Definition', 'Enterprise \u2014 2,000+ employees, named-account territories, field sales',
-      'Learned from the Account segment picklist and territory model', [], true),
-    A('mulesoft_integration_modernization', 'ent', 'App portfolio', '100+ applications', 'Median 240 apps across 7 wins.', ['United Oil & Gas \u00b7 $740K']),
-    A('mulesoft_integration_modernization', 'ent', 'M&A activity', 'Acquisition in past 24 months', '5 of 7 wins \u2014 the strongest single predictor.', ['Pyramid Construction \u00b7 $520K']),
-    A('mulesoft_integration_modernization', 'ent', 'Middleware', 'Legacy ESB to retire', '6 of 7 displaced an aging ESB.', []),
-    A('mulesoft_integration_modernization', 'ent', 'Buying committee', 'Architect-led; CIO signs', 'Enterprise architect runs the evaluation.', []),
-    A('mulesoft_integration_modernization', 'ent', 'Sales cycle', '6 \u2013 8 months', 'Median 6.4 months.', []),
-    A('mulesoft_integration_modernization', 'ent', 'Deal size', '$400K \u2013 $900K ACV', 'Median $560K.', []),
-    A('mulesoft_integration_modernization', 'mm', 'Definition', 'Mid-market \u2014 200\u20132,000 employees, geo territories, inside + field',
-      'Learned from the Account segment picklist and territory model', [], true),
-    A('mulesoft_integration_modernization', 'poor_fit', 'Greenfield or single-vendor stacks', 'Avoid', 'No integration debt, no urgency.', []),
+    A('mulesoft_integration_modernization', 'ent', null, 'Definition', 'Enterprise \u2014 2,000+ employees, named-account territories, field sales',
+      'Learned from the Account segment picklist and territory model', null, [], true),
+    A('mulesoft_integration_modernization', 'ent', 'Technographic', 'App portfolio', '100+ applications', 'Median 240 apps across wins.', '61 of 70', ['United Oil & Gas \u00b7 $740K']),
+    A('mulesoft_integration_modernization', 'ent', 'Signal', 'M&A activity', 'Acquisition in past 24 months', 'The strongest single predictor in recent wins.', '49 of 70', ['Pyramid Construction \u00b7 $520K']),
+    A('mulesoft_integration_modernization', 'ent', 'Technographic', 'Middleware', 'Legacy ESB to retire', 'Most wins displaced an aging ESB.', '59 of 70', []),
+    A('mulesoft_integration_modernization', 'ent', 'Buying behavior', 'Buying committee', 'Architect-led; CIO signs', 'Enterprise architect runs the evaluation.', '60 of 70', []),
+    A('mulesoft_integration_modernization', 'ent', 'Deal shape', 'Sales cycle', '6 \u2013 8 months', 'Median 6.4 months.', '50 of 70', []),
+    A('mulesoft_integration_modernization', 'ent', 'Deal shape', 'Deal size', '$400K \u2013 $900K ACV', 'Median $560K.', '48 of 70', []),
+    A('mulesoft_integration_modernization', 'mm', null, 'Definition', 'Mid-market \u2014 200\u20132,000 employees, geo territories, inside + field',
+      'Learned from the Account segment picklist and territory model', null, [], true),
+    A('mulesoft_integration_modernization', 'poor_fit', null, 'Greenfield or single-vendor stacks', 'Avoid', 'No integration debt, no urgency.', null, []),
   ];
+
+  // ── Segment applicability tags for non-ICP rows ─────────────────────────
+  // Absent = applies to all segments. Only rows where the evidence is
+  // segment-specific get tagged.
+  const SEG_TAGS = {
+    sig_new_cdo: 'Enterprise',
+    sig_public_ai: 'Enterprise',
+    sig_hiring_data_eng: 'Enterprise',
+    sig_sales_productivity_initiative: 'Enterprise',
+    msg_no_data_no_ai: 'Enterprise',
+    msg_agents_guardrails: 'Enterprise',
+    pain_pipeline_capacity: 'Mid-market',
+    proof_saks: 'Enterprise',
+    cs_f1: 'Enterprise',
+    cs_gucci: 'Enterprise',
+    cs_air_india: 'Enterprise',
+    cs_heathrow: 'Enterprise',
+    cs_wiley: 'Mid-market',
+    comp_point_ai: 'Mid-market',
+  };
+  D.rows.forEach(r => { if (SEG_TAGS[r.id]) r.segment = SEG_TAGS[r.id]; });
 })();
 </script>
 <script type="text/babel" data-presets="react">/* helpers */ // helpers.jsx — shared atoms, metadata maps, field definitions, top nav.
@@ -3481,7 +3504,7 @@ __ds_ns.Tabs = __ds_scope.Tabs;
     'Compliance / Security': { icon: 'shield-check',         color: 'var(--sf-success-500)' },
     'Messaging Guardrail':   { icon: 'shield-alert',         color: 'var(--sf-violet-500)' },
     'Competitor / Alternative': { icon: 'git-compare',       color: 'var(--sf-gray-600)' },
-    'ICP Attribute':         { icon: 'building-2',           color: 'var(--sf-blue-500)' },
+    'ICP Characteristic':    { icon: 'building-2',           color: 'var(--sf-blue-500)' },
   };
 
   const SOURCE = {
@@ -3530,6 +3553,7 @@ __ds_ns.Tabs = __ds_scope.Tabs;
       { key: 'valueProp', label: 'Value proposition', kind: 'area' },
       { key: 'outcome', label: 'Business outcome', kind: 'area' },
       { key: 'relatedPersona', label: 'Related persona', kind: 'text' },
+      { key: 'segment', label: 'Segment (blank = all segments)', kind: 'text' },
     ],
     'Value Proposition': [
       { key: 'value', label: 'Value proposition', kind: 'text' },
@@ -3538,6 +3562,7 @@ __ds_ns.Tabs = __ds_scope.Tabs;
       { key: 'capability', label: 'Product capability', kind: 'area' },
       { key: 'outcome', label: 'Business outcome', kind: 'area' },
       { key: 'relatedPersona', label: 'Related persona', kind: 'text' },
+      { key: 'segment', label: 'Segment (blank = all segments)', kind: 'text' },
     ],
     'Signal Playbook': [
       { key: 'value', label: 'Signal / trigger', kind: 'text' },
@@ -3547,6 +3572,7 @@ __ds_ns.Tabs = __ds_scope.Tabs;
       { key: 'painHyp', label: 'Pain hypothesis', kind: 'text' },
       { key: 'angle', label: 'Messaging angle', kind: 'text' },
       { key: 'ttlDays', label: 'TTL (days)', kind: 'number' },
+      { key: 'segment', label: 'Segment (blank = all segments)', kind: 'text' },
     ],
     'Messaging Angle': [
       { key: 'value', label: 'Messaging angle', kind: 'text' },
@@ -3555,17 +3581,21 @@ __ds_ns.Tabs = __ds_scope.Tabs;
       { key: 'personaSegment', label: 'Target persona', kind: 'text' },
       { key: 'hook', label: 'Example hook', kind: 'area' },
       { key: 'avoid', label: 'Avoid saying', kind: 'area' },
+      { key: 'segment', label: 'Segment (blank = all segments)', kind: 'text' },
     ],
     _proof: [
       { key: 'value', label: 'Item', kind: 'text' },
       { key: 'description', label: 'Description', kind: 'area' },
       { key: 'proofType', label: 'Type', kind: 'text' },
       { key: 'useCase', label: 'Use case', kind: 'area' },
+      { key: 'segment', label: 'Segment (blank = all segments)', kind: 'text' },
     ],
-    'ICP Attribute': [
-      { key: 'attribute', label: 'Attribute', kind: 'text' },
+    'ICP Characteristic': [
+      { key: 'characteristic', label: 'Characteristic', kind: 'text' },
+      { key: 'charType', label: 'Type', kind: 'text' },
       { key: 'value', label: 'Value', kind: 'text' },
       { key: 'rationale', label: 'Rationale', kind: 'area' },
+      { key: 'match', label: 'Recent closed-won match (e.g. "7 of 9")', kind: 'text' },
       { key: 'deals', label: 'Example deals', kind: 'list' },
     ],
   };
@@ -3603,6 +3633,14 @@ __ds_ns.Tabs = __ds_scope.Tabs;
       borderRadius: 'var(--radius-full)', background: 'var(--sf-gray-100)', color: 'var(--sf-gray-700)',
       font: 'var(--weight-medium) var(--text-2xs)/1.4 var(--font-sans)', border: '1px solid var(--sf-gray-200)', whiteSpace: 'nowrap' } },
       icon && h(Icon, { name: icon, size: 11 }), children);
+  }
+
+  // Segment applicability chip — absent segment means the row applies to all segments
+  function SegmentChip({ segment }) {
+    if (!segment) return h('span', { style: { font: 'var(--type-label-xs)', color: 'var(--sf-gray-400)' } }, 'All');
+    return h('span', { style: { display: 'inline-flex', alignItems: 'center', padding: '3px 9px',
+      borderRadius: 'var(--radius-full)', background: 'var(--sf-blue-50)', color: 'var(--sf-blue-700)',
+      font: 'var(--weight-medium) var(--text-2xs)/1.4 var(--font-sans)', border: '1px solid var(--sf-blue-200)', whiteSpace: 'nowrap' } }, segment);
   }
 
   function SourceLine({ s }) {
@@ -3654,7 +3692,7 @@ __ds_ns.Tabs = __ds_scope.Tabs;
   }
 
   Object.assign(G, { CONF, CLAIM, CATEGORY, SOURCE, TABS, FIELD_DEFS,
-    ConfidenceChip, ClaimChip, CategoryIcon, Pill, SourceLine, TopNav, Bullets });
+    ConfidenceChip, ClaimChip, CategoryIcon, Pill, SegmentChip, SourceLine, TopNav, Bullets });
 })();
 </script>
 <script type="text/babel" data-presets="react">/* repository */ // repository.jsx — page header, motion tabs (level 1), category tabs (level 2), data tables
@@ -3676,14 +3714,16 @@ __ds_ns.Tabs = __ds_scope.Tabs;
       [m.pagesAnalyzed, 'web pages'], [m.dealsAnalyzed, 'closed-won deals'],
     ];
     return h('div', { style: { marginBottom: 14 } },
-      h('div', { style: { marginBottom: 10 } }, h(Breadcrumb, { items: ['Agent Studio', 'GTM Ontology'] })),
+      h('div', { style: { marginBottom: 10 } }, h(Breadcrumb, { items: ['Agent Studio', 'Agent Grounding'] })),
       h('div', { style: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' } },
         h('div', null,
           h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } },
-            h('h1', { style: { font: 'var(--type-h2)', color: 'var(--sf-gray-900)', margin: 0 } }, 'GTM Ontology'),
+            h('h1', { style: { font: 'var(--type-h2)', color: 'var(--sf-gray-900)', margin: 0 } }, 'Agent Grounding'),
             h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: 5, padding: '3px 10px', borderRadius: 'var(--radius-full)',
               background: 'var(--sf-violet-100)', color: 'var(--sf-violet-700)', font: 'var(--weight-semibold) var(--text-2xs)/1.4 var(--font-sans)' } },
               h(Icon, { name: 'sparkles', size: 11 }), 'Auto-learned')),
+          h('div', { style: { font: 'var(--type-body-sm)', color: 'var(--sf-gray-600)', marginTop: 6, maxWidth: 720, lineHeight: 1.5 } },
+            'Everything here was learned by your agent from your calls, emails, CRM, and website — and keeps updating as new deals close. Review it and edit anything; this is a living repository.'),
           h('div', { style: { display: 'flex', alignItems: 'center', gap: 6, marginTop: 6, flexWrap: 'wrap', font: 'var(--type-body-sm)', color: 'var(--sf-gray-600)' } },
             h('span', null, data.customer),
             h('span', { style: { color: 'var(--sf-gray-300)' } }, '\u00b7'),
@@ -3758,11 +3798,22 @@ __ds_ns.Tabs = __ds_scope.Tabs;
         h('span', { style: { font: 'var(--type-label-xs)', color: 'var(--sf-gray-600)', fontVariantNumeric: 'tabular-nums' } }, (r.sources || []).length)); } };
 
     let cols;
+    const matchBar = r => {
+      if (!r.match) return h('span', { style: { font: 'var(--type-label-xs)', color: 'var(--sf-gray-400)' } }, '\u2014');
+      const m = /^(\d+)\s+of\s+(\d+)/.exec(r.match);
+      const pct = m ? Math.round((+m[1] / +m[2]) * 100) : 0;
+      return h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+        h('div', { style: { width: 64, height: 6, borderRadius: 'var(--radius-full)', background: 'var(--sf-gray-200)', overflow: 'hidden', flexShrink: 0 } },
+          h('div', { style: { width: pct + '%', height: '100%', borderRadius: 'var(--radius-full)', background: 'var(--sf-blue-500)' } })),
+        h('span', { style: { font: 'var(--type-label-xs)', color: 'var(--sf-gray-700)', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' } }, r.match));
+    };
+    const segCol = { key: 'segment', label: 'Segment', w: 100, render: r => h(G.SegmentChip, { segment: r.segment }) };
     if (tabKey === 'icp') cols = [
-      { key: 'attribute', label: 'Attribute', w: 180, render: r => h('span', { style: { font: 'var(--type-label-sm)', color: 'var(--sf-gray-900)', ...truncate } }, r.attribute) },
-      { key: 'value', label: 'Value', w: 230, render: r => h('span', { style: { font: 'var(--type-label-md)', color: r.segmentId === 'poor_fit' ? 'var(--sf-error-700)' : 'var(--sf-gray-900)', ...clamp2 } }, r.value) },
-      { key: 'rationale', label: 'Rationale', w: 280, grow: 1, render: r => txt(r.rationale, clamp2) },
-      { key: 'deals', label: 'Example deals', w: 210, render: r => h('div', { style: { display: 'flex', gap: 5, flexWrap: 'wrap' } }, (r.deals || []).slice(0, 2).map(d => h(G.Pill, { key: d, icon: 'trophy' }, d))) },
+      { key: 'charType', label: 'Type', w: 140, render: r => h('span', { style: { font: 'var(--type-label-sm)', color: r.segmentId === 'poor_fit' ? 'var(--sf-error-700)' : 'var(--sf-gray-900)', ...truncate } }, r.segmentId === 'poor_fit' ? r.value : (r.charType || '\u2014')) },
+      { key: 'value', label: 'Value', w: 260, render: r => h('span', { style: { font: 'var(--type-label-md)', color: 'var(--sf-gray-900)', ...clamp2 } }, r.segmentId === 'poor_fit' ? r.characteristic : r.value) },
+      { key: 'rationale', label: 'Rationale', w: 260, grow: 1, render: r => txt(r.rationale, clamp2) },
+      { key: 'match', label: 'Recent C/W deals', w: 150, render: matchBar },
+      { key: 'deals', label: 'Example deals', w: 200, render: r => h('div', { style: { display: 'flex', gap: 5, flexWrap: 'wrap' } }, (r.deals || []).slice(0, 2).map(d => h(G.Pill, { key: d, icon: 'trophy' }, d))) },
     ];
     else if (tabKey === 'who') cols = [
       { key: 'value', label: 'Persona', w: 200, grow: 1, render: valueCell },
@@ -3771,14 +3822,14 @@ __ds_ns.Tabs = __ds_scope.Tabs;
       { key: 'responsibilities', label: 'Owns', w: 210, render: r => txt(r.responsibilities, clamp2) },
       { key: 'caresAbout', label: 'Cares about', w: 220, render: r => txt((r.caresAbout || []).join(' \u00b7 '), clamp2) },
       { key: 'callMentions', label: 'Calls', w: 70, render: r => txt(r.callMentions ? String(r.callMentions) : '\u2014', { fontVariantNumeric: 'tabular-nums' }) },
-      conf, sources,
+      segCol, conf, sources,
     ];
     else if (tabKey === 'why') cols = [
       { key: 'value', label: 'Item', w: 210, grow: 1, render: valueCell },
       { key: 'whyMatters', label: 'Why it matters', w: 250, render: r => txt(r.whyMatters, clamp2) },
       { key: 'capability', label: 'Product capability', w: 230, render: r => txt(r.capability, clamp2) },
       { key: 'relatedPersona', label: 'Persona', w: 150, render: r => txt(r.relatedPersona, truncate) },
-      conf, sources,
+      segCol, conf, sources,
     ];
     else if (tabKey === 'when') cols = [
       { key: 'value', label: 'Signal / trigger', w: 210, grow: 1, render: valueCell },
@@ -3786,28 +3837,28 @@ __ds_ns.Tabs = __ds_scope.Tabs;
       { key: 'personaSegment', label: 'Target persona', w: 180, render: r => txt(r.personaSegment, clamp2) },
       { key: 'angle', label: 'Messaging angle', w: 230, render: r => txt(r.angle, clamp2) },
       { key: 'ttl', label: 'TTL', w: 70, render: r => txt(r.ttlDays ? r.ttlDays + 'd' : '\u2014') },
-      conf, sources,
+      segCol, conf, sources,
     ];
     else if (tabKey === 'what') cols = [
       { key: 'value', label: 'Messaging angle', w: 230, grow: 1, render: valueCell },
       { key: 'useWhen', label: 'Use when', w: 230, render: r => txt(r.useWhen, clamp2) },
       { key: 'hook', label: 'Example hook', w: 270, render: r => txt(r.hook, clamp2) },
       { key: 'avoid', label: 'Avoid saying', w: 210, render: r => txt(r.avoid, clamp2) },
-      conf, sources,
+      segCol, conf, sources,
     ];
     else if (tabKey === 'proof') cols = [
       { key: 'proofType', label: 'Type', w: 175, render: r => h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } }, h(G.CategoryIcon, { category: r.category, size: 13, boxed: true }), h('span', { style: { font: 'var(--type-label-sm)', color: 'var(--sf-gray-800)', ...truncate } }, r.proofType || r.category)) },
       { key: 'value', label: 'Item', w: 250, grow: 1, render: r => txt(r.value, { color: 'var(--sf-gray-900)', font: 'var(--type-label-sm)', ...clamp2 }) },
       { key: 'description', label: 'Description', w: 280, render: r => txt(r.description, clamp2) },
       { key: 'useCase', label: 'Use case', w: 220, render: r => txt(r.useCase, clamp2) },
-      conf, sources,
+      segCol, conf, sources,
     ];
     else if (tabKey === 'guard') cols = [
       { key: 'proofType', label: 'Type', w: 165, render: r => h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } }, h(G.CategoryIcon, { category: r.category, size: 13, boxed: true }), h('span', { style: { font: 'var(--type-label-sm)', color: 'var(--sf-gray-800)', ...truncate } }, r.category === 'Messaging Guardrail' ? 'Guardrail' : 'Competitor')) },
       { key: 'value', label: 'Rule', w: 260, grow: 1, render: r => txt(r.value, { color: 'var(--sf-gray-900)', font: 'var(--type-label-sm)', ...clamp2 }) },
       { key: 'description', label: 'Description', w: 320, render: r => txt(r.description, clamp2) },
       { key: 'personaSegment', label: 'Applies to', w: 190, render: r => txt(r.personaSegment, clamp2) },
-      conf, sources,
+      segCol, conf, sources,
     ];
     else cols = [ // all
       { key: 'category', label: 'Category', w: 165, render: r => h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } }, h(G.CategoryIcon, { category: r.category, size: 13, boxed: true }), h('span', { style: { font: 'var(--type-label-xs)', color: 'var(--sf-gray-700)', ...truncate } }, r.category)) },
@@ -3879,46 +3930,19 @@ __ds_ns.Tabs = __ds_scope.Tabs;
   const G = (window.GTM = window.GTM || {});
   const h = React.createElement;
 
-  // ICPSegments — segment switcher + definition + sweet-spot table + shared poor fit
-  function ICPSegments({ meta, rows, opts, onOpen, onEdit, onAdd }) {
+  // One segment = one section: header + definition strip + sweet-spot table (or empty state)
+  function SegmentSection({ seg, rows, opts, onOpen, onEdit, onAdd }) {
     const { Icon, Button, IconButton } = window.SalesforceDesignSystem_585a3e;
-    const segments = (meta && meta.segments) || [];
-    const [segId, setSegId] = React.useState(segments[0] && segments[0].id);
-    const seg = segments.find(s => s.id === segId) || segments[0];
+    const defRow = rows.find(r => r.segmentId === seg.id && r.isDefinition);
+    const attrRows = rows.filter(r => r.segmentId === seg.id && !r.isDefinition);
 
-    const defRow = rows.find(r => r.segmentId === segId && r.isDefinition);
-    const attrRows = rows.filter(r => r.segmentId === segId && !r.isDefinition);
-    const poorFit = rows.filter(r => r.segmentId === 'poor_fit');
-
-    return h('div', null,
-      // toolbar
-      h('div', { style: { display: 'flex', gap: 12, alignItems: 'center', margin: '14px 0', flexWrap: 'wrap' } },
-        h('span', { style: { font: 'var(--type-body-sm)', color: 'var(--sf-gray-600)' } },
-          'Segments learned from CRM (' + ((meta && meta.learnedFrom) || 'account fields') + ') \u00b7 sweet spots inferred from closed-won deals'),
-        h('div', { style: { marginLeft: 'auto' } },
-          h(Button, { variant: 'neutral', icon: 'plus', size: 'sm', onClick: () => onAdd(segId) }, 'Add attribute'))),
-      // segment switcher
-      h('div', { style: { display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' } },
-        segments.map(s => {
-          const on = s.id === segId;
-          return h('button', { key: s.id, onClick: () => setSegId(s.id),
-            style: { display: 'inline-flex', alignItems: 'center', gap: 8, padding: '7px 14px', cursor: 'pointer',
-              borderRadius: 'var(--radius-full)', border: '1px solid ' + (on ? 'var(--sf-blue-500)' : 'var(--sf-gray-300)'),
-              background: on ? 'var(--sf-blue-50)' : '#fff',
-              font: 'var(--weight-' + (on ? 'semibold' : 'medium') + ') var(--text-sm)/1 var(--font-sans)',
-              color: on ? 'var(--sf-blue-700)' : 'var(--sf-gray-700)', transition: 'border-color var(--duration-fast)' } },
-            s.name,
-            h('span', { style: { font: 'var(--type-label-xs)', color: on ? 'var(--sf-blue-700)' : 'var(--sf-gray-500)', fontVariantNumeric: 'tabular-nums' } },
-              s.deals + ' deal' + (s.deals === 1 ? '' : 's')));
-        })),
-      // drift insight
-      meta && meta.insight ? h('div', { style: { display: 'flex', gap: 9, alignItems: 'flex-start', padding: '10px 14px', marginBottom: 14,
-        background: 'var(--sf-blue-50)', border: '1px solid var(--sf-blue-200)', borderRadius: 'var(--radius-md)' } },
-        h('span', { style: { color: 'var(--sf-blue-500)', display: 'flex', flexShrink: 0, marginTop: 1 } }, h(Icon, { name: 'lightbulb', size: 15 })),
-        h('span', { style: { font: 'var(--type-body-sm)', color: 'var(--sf-gray-700)', lineHeight: 1.5 } }, meta.insight)) : null,
+    return h('div', { style: { marginBottom: 26 }, 'data-screen-label': 'ICP segment: ' + seg.name },
+      // segment header
+      h('div', { style: { display: 'flex', alignItems: 'baseline', gap: 10, margin: '0 0 8px' } },
+        h('span', { style: { font: 'var(--type-h5)', color: 'var(--sf-gray-900)' } }, seg.name)),
       // definition strip
       defRow ? h('div', { onClick: () => onOpen(defRow),
-        style: { display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', marginBottom: 14, cursor: 'pointer',
+        style: { display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', marginBottom: 10, cursor: 'pointer',
           background: '#fff', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-1)' } },
         h('div', { style: { flex: 1, minWidth: 0 } },
           h('div', { style: { font: 'var(--type-overline)', textTransform: 'uppercase', letterSpacing: 'var(--tracking-wider)', color: 'var(--sf-gray-500)', marginBottom: 3 } }, 'Segment definition'),
@@ -3928,20 +3952,31 @@ __ds_ns.Tabs = __ds_scope.Tabs;
           h(IconButton, { icon: 'pencil', size: 'sm', variant: 'ghost', title: 'Edit definition', onClick: () => onEdit(defRow) }))) : null,
       // sweet-spot table or empty state
       attrRows.length
-        ? h('div', null,
-            h('div', { style: { font: 'var(--type-h6)', color: 'var(--sf-gray-900)', margin: '0 0 8px' } },
-              'Sweet spot \u00b7 derived from ' + seg.deals + ' closed-won deals' + (seg.medianAcv !== '\u2014' ? ' \u00b7 median ACV ' + seg.medianAcv : '')),
-            h(G.DataTable, { rows: attrRows, tabKey: 'icp', opts, onRowClick: onOpen, onEditRow: onEdit }))
-        : h('div', { style: { border: '1px dashed var(--sf-gray-300)', borderRadius: 'var(--radius-md)', background: '#fff', padding: '40px 24px', textAlign: 'center' } },
-            h('span', { style: { display: 'inline-flex', color: 'var(--sf-gray-400)', marginBottom: 10 } }, h(Icon, { name: 'chart-scatter', size: 26 })),
+        ? h(G.DataTable, { rows: attrRows, tabKey: 'icp', opts, onRowClick: onOpen, onEditRow: onEdit })
+        : h('div', { style: { border: '1px dashed var(--sf-gray-300)', borderRadius: 'var(--radius-md)', background: '#fff', padding: '32px 24px', textAlign: 'center' } },
+            h('span', { style: { display: 'inline-flex', color: 'var(--sf-gray-400)', marginBottom: 8 } }, h(Icon, { name: 'chart-scatter', size: 24 })),
             h('div', { style: { font: 'var(--type-h6)', color: 'var(--sf-gray-700)' } }, 'Not enough closed-won deals to infer a sweet spot'),
             h('div', { style: { font: 'var(--type-body-sm)', color: 'var(--sf-gray-500)', marginTop: 4 } },
-              seg.deals + ' win' + (seg.deals === 1 ? '' : 's') + ' in this segment \u2014 patterns unlock as more deals close. You can add attributes manually.')),
+              seg.deals + ' win' + (seg.deals === 1 ? '' : 's') + ' in this segment \u2014 patterns unlock as more deals close. You can add characteristics manually.')),
+      // add row, below the table
+      h('div', { style: { marginTop: 8 } },
+        h(Button, { variant: 'ghost', icon: 'plus', size: 'sm', onClick: () => onAdd(seg.id) }, 'Add row')));
+  }
+
+  // ICPSegments — every segment stacked as its own table, shared poor fit at the bottom
+  function ICPSegments({ meta, rows, opts, onOpen, onEdit, onAdd }) {
+    const { Icon } = window.SalesforceDesignSystem_585a3e;
+    const segments = (meta && meta.segments) || [];
+    const poorFit = rows.filter(r => r.segmentId === 'poor_fit');
+
+    return h('div', null,
+      h('div', { style: { height: 14 } }),
+      segments.map(seg => h(SegmentSection, { key: seg.id, seg, rows, opts, onOpen, onEdit, onAdd })),
       // shared poor fit
-      poorFit.length ? h('div', { style: { marginTop: 18 } },
+      poorFit.length ? h('div', { style: { marginTop: 4 } },
         h('div', { style: { display: 'flex', alignItems: 'center', gap: 7, margin: '0 0 8px' } },
           h('span', { style: { color: 'var(--sf-error-500)', display: 'flex' } }, h(Icon, { name: 'ban', size: 14 })),
-          h('span', { style: { font: 'var(--type-h6)', color: 'var(--sf-gray-900)' } }, 'Poor fit \u00b7 shared across segments')),
+          h('span', { style: { font: 'var(--type-h5)', color: 'var(--sf-gray-900)' } }, 'Poor fit \u00b7 shared across segments')),
         h(G.DataTable, { rows: poorFit, tabKey: 'icp', opts, onRowClick: onOpen, onEditRow: onEdit })) : null);
   }
 
@@ -3965,8 +4000,8 @@ __ds_ns.Tabs = __ds_scope.Tabs;
     const { Icon, Button, Input, Textarea, Select } = window.SalesforceDesignSystem_585a3e;
     const { mode, kind, row, cats } = state; // mode: view|edit|create
     const isICP = kind === 'icp';
-    const category = mode === 'create' ? (state.category || (cats && cats[0]) || 'Pain Point') : (isICP ? 'ICP Attribute' : row.category);
-    const defs = G.FIELD_DEFS[isICP ? 'ICP Attribute' : category] || G.FIELD_DEFS['Pain Point'];
+    const category = mode === 'create' ? (state.category || (cats && cats[0]) || 'Pain Point') : (isICP ? 'ICP Characteristic' : row.category);
+    const defs = G.FIELD_DEFS[isICP ? 'ICP Characteristic' : category] || G.FIELD_DEFS['Pain Point'];
 
     const [editing, setEditing] = React.useState(mode !== 'view');
     const [draftCat, setDraftCat] = React.useState(category);
@@ -3976,14 +4011,14 @@ __ds_ns.Tabs = __ds_scope.Tabs;
       return d;
     });
     React.useEffect(() => {
-      const dd = G.FIELD_DEFS[mode === 'create' && !isICP ? draftCat : (isICP ? 'ICP Attribute' : category)] || [];
+      const dd = G.FIELD_DEFS[mode === 'create' && !isICP ? draftCat : (isICP ? 'ICP Characteristic' : category)] || [];
       const d = {};
       dd.forEach(f => { d[f.key] = fieldToText(row ? row[f.key] : '', f.kind); });
       setDraft(d); setEditing(mode !== 'view');
     }, [row && row.id, mode, draftCat]);
 
-    const activeDefs = G.FIELD_DEFS[mode === 'create' && !isICP ? draftCat : (isICP ? 'ICP Attribute' : category)] || defs;
-    const title = mode === 'create' ? (isICP ? 'New attribute' : 'New row') : (isICP ? row.attribute : row.value);
+    const activeDefs = G.FIELD_DEFS[mode === 'create' && !isICP ? draftCat : (isICP ? 'ICP Characteristic' : category)] || defs;
+    const title = mode === 'create' ? (isICP ? 'New characteristic' : 'New row') : (isICP ? row.characteristic : row.value);
 
     function save() {
       const patch = {};
@@ -3993,7 +4028,7 @@ __ds_ns.Tabs = __ds_scope.Tabs;
     }
 
     // ── Facts (view mode) ──
-    const facts = activeDefs.filter(f => f.key !== (isICP ? 'attribute' : 'value'))
+    const facts = activeDefs.filter(f => f.key !== (isICP ? 'characteristic' : 'value'))
       .map(f => ({ f, v: row ? row[f.key] : null }))
       .filter(x => x.v != null && x.v !== '' && !(Array.isArray(x.v) && !x.v.length));
 
@@ -4003,7 +4038,7 @@ __ds_ns.Tabs = __ds_scope.Tabs;
         // header
         h('div', { style: { padding: '16px 20px 14px', borderBottom: '1px solid var(--color-border)' } },
           h('div', { style: { display: 'flex', alignItems: 'flex-start', gap: 11 } },
-            h(G.CategoryIcon, { category: isICP ? 'ICP Attribute' : (mode === 'create' ? draftCat : category), size: 17, boxed: true }),
+            h(G.CategoryIcon, { category: isICP ? 'ICP Characteristic' : (mode === 'create' ? draftCat : category), size: 17, boxed: true }),
             h('div', { style: { flex: 1, minWidth: 0 } },
               h('div', { style: { font: 'var(--type-overline)', textTransform: 'uppercase', letterSpacing: 'var(--tracking-wider)', color: 'var(--sf-gray-500)' } },
                 isICP ? 'Ideal company profile' : (mode === 'create' ? draftCat : category)),
@@ -4620,7 +4655,7 @@ Object.assign(window, {
 
     const data = window.GTM_DATA;
     const motions = data.motions;
-    const plays = data.plays || [];
+    const plays = []; // GTM motions hidden for MVP — re-enable with: data.plays || []
     const opts = { density: t.density, showConfidence: t.showConfidence, showSourceIcons: t.showSourceIcons };
 
     const flash = (cfg) => { setToast(cfg); clearTimeout(window.__gtmToast); window.__gtmToast = setTimeout(() => setToast(null), 2800); };
@@ -4675,7 +4710,7 @@ Object.assign(window, {
         onAdd: (segmentId) => setEditor({ mode: 'create', kind: 'icp', segmentId }) });
     } else {
       const base = tab === 'all' ? mRows : mRows.filter(r => tabDef.cats.includes(r.category));
-      const cats = tab === 'all' ? Object.keys(G.CATEGORY).filter(c => c !== 'ICP Attribute') : tabDef.cats;
+      const cats = tab === 'all' ? Object.keys(G.CATEGORY).filter(c => c !== 'ICP Characteristic') : tabDef.cats;
       body = h('div', null,
         h(G.Toolbar, { count: base.length, onAdd: openAdd('row', cats), addLabel: tab === 'who' ? 'Add persona' : 'Add row' }),
         h(G.DataTable, { rows: base, tabKey: tab, opts, onRowClick: openView('row'), onEditRow: openEdit('row') }));
