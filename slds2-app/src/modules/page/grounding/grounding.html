@@ -1,74 +1,57 @@
 <template>
-    <div class="slds-p-horizontal_medium slds-p-vertical_small page-shell">
+    <div class="page-shell">
 
-        <!-- ── Page header ─────────────────────────────────────────────── -->
-        <div class="slds-page-header slds-m-bottom_small">
-            <div class="slds-page-header__row">
-                <div class="slds-page-header__col-title">
-                    <div class="slds-media">
-                        <div class="slds-media__figure">
-                            <lightning-icon icon-name="standard:bot" size="medium" alternative-text="Agent Grounding"></lightning-icon>
-                        </div>
-                        <div class="slds-media__body">
-                            <nav role="navigation" aria-label="Breadcrumbs">
-                                <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
-                                    <li class="slds-breadcrumb__item"><a href="#" onclick={noop}>Agent Studio</a></li>
-                                    <li class="slds-breadcrumb__item"><span>Agent Grounding</span></li>
-                                </ol>
-                            </nav>
-                            <div class="slds-page-header__name">
-                                <div class="slds-page-header__name-title">
-                                    <h1>
-                                        <span class="slds-page-header__title slds-truncate" title="Agent Grounding">Agent Grounding</span>
-                                    </h1>
-                                </div>
-                                <span class="slds-badge slds-m-left_x-small auto-badge">
-                                    <lightning-icon icon-name="utility:sparkles" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
-                                    Auto-learned
-                                </span>
-                            </div>
-                            <p class="slds-page-header__name-meta header-sub">
-                                Everything here was learned by your agent from your calls, emails, CRM, and website — and keeps
-                                updating as new deals close. Review it and edit anything; this is a living repository.
-                            </p>
-                            <p class="header-prov">
-                                {customer} · <b>{meta.callsAnalyzed}</b> sales calls · <b>{meta.emailsAnalyzed}</b> emails ·
-                                <b>{meta.pagesAnalyzed}</b> web pages · <b>{meta.dealsAnalyzed}</b> closed-won deals ·
-                                Last extracted {extractedAt}
-                            </p>
-                        </div>
-                    </div>
+        <!-- ── Page header (plain, like the original) ──────────────────── -->
+        <div class="page-head">
+            <div class="page-head-left">
+                <nav role="navigation" aria-label="Breadcrumbs">
+                    <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                        <li class="slds-breadcrumb__item"><a href="#" onclick={noop}>Agent Studio</a></li>
+                        <li class="slds-breadcrumb__item"><span>Agent Grounding</span></li>
+                    </ol>
+                </nav>
+                <div class="title-row">
+                    <h1 class="page-title">Agent Grounding</h1>
+                    <span class="auto-badge">
+                        <lightning-icon icon-name="utility:sparkles" size="xx-small"></lightning-icon>
+                        Auto-learned
+                    </span>
                 </div>
-                <div class="slds-page-header__col-actions">
-                    <div class="slds-page-header__controls">
-                        <div class="slds-page-header__control">
-                            <lightning-button
-                                label="Re-run extraction"
-                                icon-name="utility:refresh"
-                                variant="neutral"
-                                onclick={handleRerun}>
-                            </lightning-button>
-                        </div>
-                    </div>
-                </div>
+                <p class="header-sub">
+                    Everything here was learned by your agent from your calls, emails, CRM, and website — and keeps
+                    updating as new deals close. Review it and edit anything; this is a living repository.
+                </p>
+                <p class="header-prov">
+                    {customer} · <b>{meta.callsAnalyzed}</b> sales calls · <b>{meta.emailsAnalyzed}</b> emails ·
+                    <b>{meta.pagesAnalyzed}</b> web pages · <b>{meta.dealsAnalyzed}</b> closed-won deals ·
+                    Last extracted {extractedAt}
+                </p>
+            </div>
+            <div class="page-head-actions">
+                <lightning-button
+                    label="Re-run extraction"
+                    icon-name="utility:refresh"
+                    variant="neutral"
+                    onclick={handleRerun}>
+                </lightning-button>
             </div>
         </div>
 
         <!-- ── Body: rail + content ────────────────────────────────────── -->
-        <div class="slds-grid slds-gutters_small body-grid">
+        <div class="body-grid">
 
             <!-- Products rail -->
-            <div class="slds-col slds-no-flex rail-col">
-                <div class="slds-box slds-box_x-small rail-box">
-                    <nav class="slds-nav-vertical" aria-label="Products">
+            <div class="rail-col">
+                <div class="rail-box">
+                    <nav class="slds-nav-vertical rail-nav" aria-label="Products">
                         <div class="slds-nav-vertical__section">
-                            <h2 class="slds-nav-vertical__title">Products</h2>
+                            <h2 class="slds-nav-vertical__title rail-title">Products</h2>
                             <ul aria-describedby="products">
                                 <template for:each={products} for:item="p">
                                     <li key={p.id} class={p.itemClass}>
-                                        <a href="#" class="slds-nav-vertical__action" data-id={p.id} onclick={handleProductSelect}>
+                                        <a href="#" class="slds-nav-vertical__action rail-action" data-id={p.id} onclick={handleProductSelect}>
                                             <span class="rail-label">{p.name}</span>
-                                            <span class="slds-badge slds-col_bump-left">{p.count}</span>
+                                            <span class="rail-count">{p.count}</span>
                                         </a>
                                     </li>
                                 </template>
@@ -78,16 +61,14 @@
                 </div>
             </div>
 
-            <!-- Content panel -->
-            <div class="slds-col content-col">
-                <article class="slds-card content-card">
-                    <div class="slds-card__header">
-                        <h2 class="slds-card__header-title slds-text-heading_small">{selName}</h2>
-                    </div>
+            <!-- Content -->
+            <div class="content-col">
 
-                    <!-- Category tabs -->
+                <!-- Card: product name + tabs only -->
+                <div class="tabs-card">
+                    <h2 class="motion-name">{selName}</h2>
                     <div class="slds-tabs_default">
-                        <ul class="slds-tabs_default__nav" role="tablist">
+                        <ul class="slds-tabs_default__nav tabs-nav" role="tablist">
                             <template for:each={tabs} for:item="t">
                                 <li key={t.key} class={t.itemClass} title={t.label} role="presentation">
                                     <a class="slds-tabs_default__link" href="#" role="tab"
@@ -98,112 +79,106 @@
                                 </li>
                             </template>
                         </ul>
-
-                        <div class="slds-tabs_default__content slds-show" role="tabpanel">
-
-                            <!-- ICP tab: stacked segment sections -->
-                            <template lwc:if={isIcpTab}>
-                                <template for:each={icpSections} for:item="seg">
-                                    <div key={seg.id} class="slds-m-bottom_large">
-                                        <h3 class="slds-text-heading_small slds-m-bottom_x-small">{seg.name}</h3>
-                                        <template lwc:if={seg.defId}>
-                                            <div class="slds-box slds-box_x-small slds-m-bottom_x-small def-box"
-                                                 data-id={seg.defId} onclick={handleDefOpen}>
-                                                <div class="slds-grid slds-grid_vertical-align-center">
-                                                    <div class="slds-col">
-                                                        <div class="slds-text-title_caps def-overline">Segment definition</div>
-                                                        <div class="def-value">{seg.defText}</div>
-                                                        <div class="def-sub">{seg.defSub}</div>
-                                                    </div>
-                                                    <div class="slds-col slds-no-flex">
-                                                        <lightning-button-icon icon-name="utility:edit" variant="bare" size="small"
-                                                            alternative-text="Edit definition" data-id={seg.defId}
-                                                            onclick={handleDefEdit}></lightning-button-icon>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </template>
-                                        <template lwc:if={seg.hasRows}>
-                                            <ui-grounding-table columns={icpColumns} rows={seg.rows}
-                                                onrowopen={handleIcpOpen} onrowedit={handleIcpEdit}></ui-grounding-table>
-                                        </template>
-                                        <template lwc:else>
-                                            <div class="slds-box slds-box_small slds-text-align_center empty-box">
-                                                <div class="slds-text-heading_small slds-m-bottom_xx-small">Not enough closed-won deals to infer a sweet spot</div>
-                                                <div class="slds-text-body_small slds-text-color_weak">{seg.emptyText}</div>
-                                            </div>
-                                        </template>
-                                        <div class="slds-m-top_x-small">
-                                            <lightning-button label="Add row" icon-name="utility:add" variant="base"
-                                                data-seg={seg.id} onclick={handleAddIcp}></lightning-button>
-                                        </div>
-                                    </div>
-                                </template>
-
-                                <template lwc:if={hasPoorFit}>
-                                    <div class="slds-m-bottom_small">
-                                        <h3 class="slds-text-heading_small slds-m-bottom_x-small poor-fit-title">
-                                            <lightning-icon icon-name="utility:ban" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
-                                            Poor fit · shared across segments
-                                        </h3>
-                                        <ui-grounding-table columns={icpColumns} rows={poorFitRows}
-                                            onrowopen={handleIcpOpen} onrowedit={handleIcpEdit}></ui-grounding-table>
-                                        <div class="slds-m-top_x-small">
-                                            <lightning-button label="Add row" icon-name="utility:add" variant="base"
-                                                data-seg="poor_fit" onclick={handleAddIcp}></lightning-button>
-                                        </div>
-                                    </div>
-                                </template>
-                            </template>
-
-                            <!-- Standard tabs: count + table + add button below -->
-                            <template lwc:else>
-                                <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">{rowCountLabel}</p>
-                                <ui-grounding-table columns={tableColumns} rows={tableRows}
-                                    onrowopen={handleRowOpen} onrowedit={handleRowEdit}></ui-grounding-table>
-                                <div class="slds-m-top_x-small">
-                                    <lightning-button label={addLabel} icon-name="utility:add" variant="base"
-                                        onclick={handleAddRow}></lightning-button>
-                                </div>
-                            </template>
-
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </div>
-
-        <!-- ── Editor drawer ───────────────────────────────────────────── -->
-        <template lwc:if={editor}>
-            <div class="drawer-backdrop" onclick={closeEditor}></div>
-            <section class="slds-panel slds-panel_docked slds-panel_docked-right slds-is-open drawer-panel" aria-hidden="false">
-                <div class="slds-panel__header">
-                    <div>
-                        <div class="slds-text-title_caps drawer-overline">{drawerCategory}</div>
-                        <h2 class="slds-panel__header-title slds-text-heading_small" title={drawerTitle}>{drawerTitle}</h2>
-                        <template lwc:if={drawerChips}>
-                            <div class="slds-m-top_xx-small">
-                                <span class={drawerChips.confClass}>{drawerChips.confText}</span>
-                                <span class="claim-text slds-m-left_x-small">{drawerChips.claim}</span>
-                            </div>
-                        </template>
-                    </div>
-                    <div class="slds-panel__header-actions">
-                        <lightning-button-icon icon-name="utility:close" variant="bare"
-                            alternative-text="Close" onclick={closeEditor}></lightning-button-icon>
                     </div>
                 </div>
 
-                <div class="slds-panel__body drawer-body">
+                <!-- Tab body, on the page background like the original -->
+                <div class="tab-body">
+
+                    <!-- ICP tab: stacked segment sections -->
+                    <template lwc:if={isIcpTab}>
+                        <template for:each={icpSections} for:item="seg">
+                            <div key={seg.id} class="icp-section">
+                                <h3 class="seg-name">{seg.name}</h3>
+                                <template lwc:if={seg.defId}>
+                                    <div class="def-box" data-id={seg.defId} onclick={handleDefOpen}>
+                                        <div class="def-main">
+                                            <div class="overline">Segment definition</div>
+                                            <div class="def-value">{seg.defText}</div>
+                                            <div class="def-sub">{seg.defSub}</div>
+                                        </div>
+                                        <lightning-button-icon icon-name="utility:edit" variant="bare" size="small"
+                                            alternative-text="Edit definition" data-id={seg.defId}
+                                            onclick={handleDefEdit}></lightning-button-icon>
+                                    </div>
+                                </template>
+                                <template lwc:if={seg.hasRows}>
+                                    <ui-grounding-table columns={icpColumns} rows={seg.rows}
+                                        onrowopen={handleIcpOpen} onrowedit={handleIcpEdit}></ui-grounding-table>
+                                </template>
+                                <template lwc:else>
+                                    <div class="empty-box">
+                                        <div class="empty-title">Not enough closed-won deals to infer a sweet spot</div>
+                                        <div class="empty-sub">{seg.emptyText}</div>
+                                    </div>
+                                </template>
+                                <div class="add-row-wrap">
+                                    <lightning-button label="Add row" icon-name="utility:add" variant="base"
+                                        data-seg={seg.id} onclick={handleAddIcp}></lightning-button>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template lwc:if={hasPoorFit}>
+                            <div class="icp-section">
+                                <h3 class="seg-name poor-fit-title">
+                                    <lightning-icon icon-name="utility:ban" size="x-small" class="ban-icon"></lightning-icon>
+                                    Poor fit · shared across segments
+                                </h3>
+                                <ui-grounding-table columns={icpColumns} rows={poorFitRows}
+                                    onrowopen={handleIcpOpen} onrowedit={handleIcpEdit}></ui-grounding-table>
+                                <div class="add-row-wrap">
+                                    <lightning-button label="Add row" icon-name="utility:add" variant="base"
+                                        data-seg="poor_fit" onclick={handleAddIcp}></lightning-button>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+
+                    <!-- Standard tabs -->
+                    <template lwc:else>
+                        <p class="row-count">{rowCountLabel}</p>
+                        <ui-grounding-table columns={tableColumns} rows={tableRows}
+                            onrowopen={handleRowOpen} onrowedit={handleRowEdit}></ui-grounding-table>
+                        <div class="add-row-wrap">
+                            <lightning-button label={addLabel} icon-name="utility:add" variant="base"
+                                onclick={handleAddRow}></lightning-button>
+                        </div>
+                    </template>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Editor drawer (custom, mirrors the original) ────────────── -->
+        <template lwc:if={editor}>
+            <div class="drawer-backdrop" onclick={closeEditor}></div>
+            <section class="drawer-panel" aria-hidden="false">
+                <div class="drawer-header">
+                    <div class="drawer-header-main">
+                        <div class="overline">{drawerCategory}</div>
+                        <h2 class="drawer-title" title={drawerTitle}>{drawerTitle}</h2>
+                        <template lwc:if={drawerChips}>
+                            <div class="drawer-chips">
+                                <span class={drawerChips.confClass}>{drawerChips.confText}</span>
+                                <span class="claim-text">{drawerChips.claim}</span>
+                            </div>
+                        </template>
+                    </div>
+                    <lightning-button-icon icon-name="utility:close" variant="bare" size="medium"
+                        alternative-text="Close" onclick={closeEditor}></lightning-button-icon>
+                </div>
+
+                <div class="drawer-body">
                     <!-- Edit / create form -->
                     <template lwc:if={isEditing}>
                         <template lwc:if={showCategoryPicker}>
                             <lightning-combobox label="Category" value={drawerCategory}
                                 options={categoryOptions} onchange={handleCategoryChange}
-                                class="slds-m-bottom_x-small"></lightning-combobox>
+                                class="field-gap"></lightning-combobox>
                         </template>
                         <template for:each={editFields} for:item="f">
-                            <div key={f.key} class="slds-m-bottom_x-small">
+                            <div key={f.key} class="field-gap">
                                 <template lwc:if={f.isArea}>
                                     <lightning-textarea label={f.label} value={f.value} placeholder={f.placeholder}
                                         data-key={f.key} onchange={handleFieldChange}></lightning-textarea>
@@ -226,9 +201,9 @@
                             <div key={fact.key} class="fact-row">
                                 <div class="fact-label">{fact.label}</div>
                                 <template lwc:if={fact.isList}>
-                                    <ul class="slds-list_dotted">
+                                    <ul class="fact-list">
                                         <template for:each={fact.items} for:item="it">
-                                            <li key={it} class="fact-text">{it}</li>
+                                            <li key={it} class="fact-text fact-li">{it}</li>
                                         </template>
                                     </ul>
                                 </template>
@@ -239,8 +214,8 @@
                         </template>
 
                         <template lwc:if={hasSources}>
-                            <div class="slds-m-top_small">
-                                <div class="slds-text-title_caps drawer-overline">{sourceCountLabel}</div>
+                            <div class="sources-block">
+                                <div class="overline">{sourceCountLabel}</div>
                                 <template for:each={viewSources} for:item="s">
                                     <div key={s.id} class="source-row">
                                         <div class="source-head">
@@ -265,7 +240,7 @@
                             <lightning-button label="Delete" variant="destructive-text" onclick={handleDelete}></lightning-button>
                         </template>
                         <span class="footer-spacer"></span>
-                        <lightning-button label="Cancel" variant="neutral" class="slds-m-right_x-small" onclick={closeEditor}></lightning-button>
+                        <lightning-button label="Cancel" variant="neutral" class="btn-gap" onclick={closeEditor}></lightning-button>
                         <lightning-button label="Save" variant="brand" onclick={handleSave}></lightning-button>
                     </template>
                     <template lwc:else>

@@ -92,9 +92,9 @@ const FIELD_DEFS = {
 };
 
 const CONF_BADGE = {
-    High: 'slds-badge slds-theme_success',
-    Medium: 'slds-badge slds-theme_warning',
-    Low: 'slds-badge',
+    High: 'chip chip-high',
+    Medium: 'chip chip-med',
+    Low: 'chip chip-low',
 };
 
 const DASH = '—';
@@ -103,7 +103,7 @@ const text = (key, v) => ({ key, text: v == null || v === '' ? DASH : String(v) 
 const strong = (key, v) => ({ key, text: v || DASH, isStrong: true });
 const confCell = (v) => ({ key: 'conf', text: v || 'Low', isBadge: true, badgeClass: CONF_BADGE[v] || CONF_BADGE.Low });
 const segCell = (v) => (v
-    ? { key: 'seg', text: v, isBadge: true, badgeClass: 'slds-badge seg-badge' }
+    ? { key: 'seg', text: v, isBadge: true, badgeClass: 'chip chip-seg' }
     : { key: 'seg', text: 'All', isMuted: true });
 const srcCell = (r) => ({ key: 'src', text: String((r.sources || []).length), isMuted: true });
 
@@ -116,53 +116,53 @@ function barCell(match) {
 
 const COLUMNS = {
     who: [
-        { key: 'value', label: 'Persona' }, { key: 'titles', label: 'Example titles' },
-        { key: 'buyingRole', label: 'Buying role', style: 'width:9rem' }, { key: 'owns', label: 'Owns' },
-        { key: 'cares', label: 'Cares about' }, { key: 'calls', label: 'Calls', style: 'width:5rem' },
+        { key: 'value', label: 'Persona', style: 'width:12.5rem' }, { key: 'titles', label: 'Example titles', style: 'width:12.5rem' },
+        { key: 'buyingRole', label: 'Buying role', style: 'width:8.5rem' }, { key: 'owns', label: 'Owns', style: 'width:13rem' },
+        { key: 'cares', label: 'Cares about', style: 'width:13.5rem' }, { key: 'calls', label: 'Calls', style: 'width:5rem' },
         { key: 'seg', label: 'Segment', style: 'width:7rem' }, { key: 'conf', label: 'Confidence', style: 'width:7.5rem' },
-        { key: 'src', label: 'Sources', style: 'width:5.5rem' },
+        { key: 'src', label: 'Sources', style: 'width:6rem' },
     ],
     why: [
-        { key: 'value', label: 'Item' }, { key: 'why', label: 'Why it matters' },
-        { key: 'cap', label: 'Product capability' }, { key: 'persona', label: 'Persona', style: 'width:10rem' },
+        { key: 'value', label: 'Item', style: 'width:13rem' }, { key: 'why', label: 'Why it matters', style: 'width:15.5rem' },
+        { key: 'cap', label: 'Product capability', style: 'width:14rem' }, { key: 'persona', label: 'Persona', style: 'width:10rem' },
         { key: 'seg', label: 'Segment', style: 'width:7rem' }, { key: 'conf', label: 'Confidence', style: 'width:7.5rem' },
-        { key: 'src', label: 'Sources', style: 'width:5.5rem' },
+        { key: 'src', label: 'Sources', style: 'width:6rem' },
     ],
     when: [
-        { key: 'value', label: 'Signal / trigger' }, { key: 'cat', label: 'Category', style: 'width:10rem' },
-        { key: 'persona', label: 'Target persona' }, { key: 'angle', label: 'Messaging angle' },
+        { key: 'value', label: 'Signal / trigger', style: 'width:13rem' }, { key: 'cat', label: 'Category', style: 'width:10rem' },
+        { key: 'persona', label: 'Target persona', style: 'width:11rem' }, { key: 'angle', label: 'Messaging angle', style: 'width:14rem' },
         { key: 'ttl', label: 'TTL', style: 'width:4.5rem' },
         { key: 'seg', label: 'Segment', style: 'width:7rem' }, { key: 'conf', label: 'Confidence', style: 'width:7.5rem' },
-        { key: 'src', label: 'Sources', style: 'width:5.5rem' },
+        { key: 'src', label: 'Sources', style: 'width:6rem' },
     ],
     what: [
-        { key: 'value', label: 'Messaging angle' }, { key: 'useWhen', label: 'Use when' },
-        { key: 'hook', label: 'Example hook' }, { key: 'avoid', label: 'Avoid saying' },
+        { key: 'value', label: 'Messaging angle', style: 'width:14rem' }, { key: 'useWhen', label: 'Use when', style: 'width:14rem' },
+        { key: 'hook', label: 'Example hook', style: 'width:16.5rem' }, { key: 'avoid', label: 'Avoid saying', style: 'width:13rem' },
         { key: 'seg', label: 'Segment', style: 'width:7rem' }, { key: 'conf', label: 'Confidence', style: 'width:7.5rem' },
-        { key: 'src', label: 'Sources', style: 'width:5.5rem' },
+        { key: 'src', label: 'Sources', style: 'width:6rem' },
     ],
     proof: [
-        { key: 'type', label: 'Type', style: 'width:9rem' }, { key: 'value', label: 'Item' },
-        { key: 'desc', label: 'Description' }, { key: 'useCase', label: 'Use case' },
+        { key: 'type', label: 'Type', style: 'width:9rem' }, { key: 'value', label: 'Item', style: 'width:15rem' },
+        { key: 'desc', label: 'Description', style: 'width:17rem' }, { key: 'useCase', label: 'Use case', style: 'width:13.5rem' },
         { key: 'seg', label: 'Segment', style: 'width:7rem' }, { key: 'conf', label: 'Confidence', style: 'width:7.5rem' },
-        { key: 'src', label: 'Sources', style: 'width:5.5rem' },
+        { key: 'src', label: 'Sources', style: 'width:6rem' },
     ],
     guard: [
-        { key: 'type', label: 'Type', style: 'width:8rem' }, { key: 'value', label: 'Rule' },
-        { key: 'desc', label: 'Description' }, { key: 'applies', label: 'Applies to' },
+        { key: 'type', label: 'Type', style: 'width:8rem' }, { key: 'value', label: 'Rule', style: 'width:16rem' },
+        { key: 'desc', label: 'Description', style: 'width:19.5rem' }, { key: 'applies', label: 'Applies to', style: 'width:12rem' },
         { key: 'seg', label: 'Segment', style: 'width:7rem' }, { key: 'conf', label: 'Confidence', style: 'width:7.5rem' },
-        { key: 'src', label: 'Sources', style: 'width:5.5rem' },
+        { key: 'src', label: 'Sources', style: 'width:6rem' },
     ],
     all: [
-        { key: 'cat', label: 'Category', style: 'width:10rem' }, { key: 'value', label: 'Extracted value' },
-        { key: 'desc', label: 'Description' }, { key: 'product', label: 'Product', style: 'width:9rem' },
+        { key: 'cat', label: 'Category', style: 'width:10rem' }, { key: 'value', label: 'Extracted value', style: 'width:14rem' },
+        { key: 'desc', label: 'Description', style: 'width:18.5rem' }, { key: 'product', label: 'Product', style: 'width:9rem' },
         { key: 'claim', label: 'Claim', style: 'width:6.5rem' }, { key: 'conf', label: 'Confidence', style: 'width:7.5rem' },
-        { key: 'src', label: 'Sources', style: 'width:5.5rem' },
+        { key: 'src', label: 'Sources', style: 'width:6rem' },
     ],
     icp: [
-        { key: 'charType', label: 'Type', style: 'width:9rem' }, { key: 'value', label: 'Value' },
-        { key: 'rationale', label: 'Rationale' }, { key: 'bar', label: 'Recent C/W deals', style: 'width:11rem' },
-        { key: 'deals', label: 'Example deals' },
+        { key: 'charType', label: 'Type', style: 'width:9rem' }, { key: 'value', label: 'Value', style: 'width:14rem' },
+        { key: 'rationale', label: 'Rationale', style: 'width:17rem' }, { key: 'bar', label: 'Recent C/W deals', style: 'width:11rem' },
+        { key: 'deals', label: 'Example deals', style: 'width:13rem' },
     ],
 };
 
@@ -280,6 +280,21 @@ export default class Grounding extends LightningElement {
     }
     get hasPoorFit() { return this.poorFitRows.length > 0; }
 
+    // Dock overlays below the global shell header. Measured on each drawer
+    // open (first-render layout is not settled yet); synthetic shadow patches
+    // querySelector, so walk the DOM to find the app body's top edge.
+    measureShellTop() {
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT);
+        while (walker.nextNode()) {
+            const n = walker.currentNode;
+            if (String(n.className).split(' ').includes('app-body')) {
+                this.template.host.style.setProperty('--grounding-shell-top', Math.max(0, n.getBoundingClientRect().top) + 'px');
+                return;
+            }
+        }
+        this.template.host.style.setProperty('--grounding-shell-top', '0px');
+    }
+
     // ── Handlers: navigation ──
     noop(event) { event.preventDefault(); }
     handleProductSelect(event) {
@@ -305,6 +320,7 @@ export default class Grounding extends LightningElement {
         const defs = FIELD_DEFS[category] || [];
         const draft = {};
         defs.forEach((f) => { draft[f.key] = fieldToText(row ? row[f.key] : '', f.kind); });
+        this.measureShellTop();
         this.editor = { mode, kind, rowId, category, draft, ...(extra || {}) };
     }
 
@@ -449,6 +465,7 @@ export default class Grounding extends LightningElement {
 
     // ── Toast ──
     showToast(tone, title, body) {
+        this.measureShellTop();
         this.toast = {
             title, body,
             cls: 'slds-notify slds-notify_toast slds-theme_' + (tone === 'success' ? 'success' : 'info'),

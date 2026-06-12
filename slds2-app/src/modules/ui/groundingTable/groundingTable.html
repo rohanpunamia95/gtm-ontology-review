@@ -1,6 +1,6 @@
 <template>
     <div class="table-wrap">
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+        <table class="slds-table slds-table_fixed-layout">
             <thead>
                 <tr class="slds-line-height_reset">
                     <template for:each={columns} for:item="col">
@@ -37,7 +37,7 @@
                                 </template>
                                 <template lwc:elseif={cell.isPills}>
                                     <template for:each={cell.pills} for:item="p">
-                                        <span key={p} class="slds-badge slds-m-right_xx-small pill-badge">{p}</span>
+                                        <span key={p} class="pill-badge slds-m-right_xx-small">{p}</span>
                                     </template>
                                 </template>
                                 <template lwc:else>
