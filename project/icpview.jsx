@@ -32,8 +32,7 @@
             h('div', { style: { font: 'var(--type-body-sm)', color: 'var(--sf-gray-500)', marginTop: 4 } },
               seg.deals + ' win' + (seg.deals === 1 ? '' : 's') + ' in this segment \u2014 patterns unlock as more deals close. You can add characteristics manually.')),
       // add row, below the table
-      h('div', { style: { marginTop: 8 } },
-        h(Button, { variant: 'ghost', icon: 'plus', size: 'sm', onClick: () => onAdd(seg.id) }, 'Add row')));
+      h(G.AddRowButton, { onClick: () => onAdd(seg.id) }));
   }
 
   // ICPSegments — every segment stacked as its own table, shared poor fit at the bottom
@@ -50,7 +49,8 @@
         h('div', { style: { display: 'flex', alignItems: 'center', gap: 7, margin: '0 0 8px' } },
           h('span', { style: { color: 'var(--sf-error-500)', display: 'flex' } }, h(Icon, { name: 'ban', size: 14 })),
           h('span', { style: { font: 'var(--type-h5)', color: 'var(--sf-gray-900)' } }, 'Poor fit \u00b7 shared across segments')),
-        h(G.DataTable, { rows: poorFit, tabKey: 'icp', opts, onRowClick: onOpen, onEditRow: onEdit })) : null);
+        h(G.DataTable, { rows: poorFit, tabKey: 'icp', opts, onRowClick: onOpen, onEditRow: onEdit }),
+        h(G.AddRowButton, { onClick: () => onAdd('poor_fit') })) : null);
   }
 
   Object.assign(G, { ICPSegments });

@@ -3942,14 +3942,18 @@ __ds_ns.Tabs = __ds_scope.Tabs;
       h('div', { style: { font: 'var(--type-body-sm)', color: 'var(--sf-gray-500)', marginTop: 4 } }, sub || 'Try clearing search or filters.'));
   }
 
-  // ── Toolbar ────────────────────────────────────────────────────────────
-  function Toolbar({ count, onAdd, addLabel, children }) {
-    const { Button } = window.SalesforceDesignSystem_585a3e;
+  // ── Toolbar (count line above the table) ──────────────────────────────
+  function Toolbar({ count, children }) {
     return h('div', { style: { display: 'flex', gap: 12, alignItems: 'center', margin: '14px 0', flexWrap: 'wrap' } },
       h('span', { style: { font: 'var(--type-label-sm)', color: 'var(--sf-gray-600)', fontVariantNumeric: 'tabular-nums' } }, count + ' rows'),
-      children || null,
-      h('div', { style: { marginLeft: 'auto' } },
-        h(Button, { variant: 'neutral', icon: 'plus', size: 'sm', onClick: onAdd }, addLabel || 'Add row')));
+      children || null);
+  }
+
+  // ── Add button — consistent placement below every table ───────────────
+  function AddRowButton({ onClick, label }) {
+    const { Button } = window.SalesforceDesignSystem_585a3e;
+    return h('div', { style: { marginTop: 8 } },
+      h(Button, { variant: 'ghost', icon: 'plus', size: 'sm', onClick }, label || 'Add row'));
   }
 
   function applyFilters(rows, q, filters) {
@@ -3962,7 +3966,7 @@ __ds_ns.Tabs = __ds_scope.Tabs;
     });
   }
 
-  Object.assign(G, { PageHeader, MotionRail, CategoryTabs, DataTable, Toolbar, EmptyState, applyFilters });
+  Object.assign(G, { PageHeader, MotionRail, CategoryTabs, DataTable, Toolbar, AddRowButton, EmptyState, applyFilters });
 })();
 </script>
 <script type="text/babel" data-presets="react">/* icpview */ // icpview.jsx — segment-based Ideal Company Profile tab
@@ -3999,8 +4003,7 @@ __ds_ns.Tabs = __ds_scope.Tabs;
             h('div', { style: { font: 'var(--type-body-sm)', color: 'var(--sf-gray-500)', marginTop: 4 } },
               seg.deals + ' win' + (seg.deals === 1 ? '' : 's') + ' in this segment \u2014 patterns unlock as more deals close. You can add characteristics manually.')),
       // add row, below the table
-      h('div', { style: { marginTop: 8 } },
-        h(Button, { variant: 'ghost', icon: 'plus', size: 'sm', onClick: () => onAdd(seg.id) }, 'Add row')));
+      h(G.AddRowButton, { onClick: () => onAdd(seg.id) }));
   }
 
   // ICPSegments — every segment stacked as its own table, shared poor fit at the bottom
@@ -4017,7 +4020,8 @@ __ds_ns.Tabs = __ds_scope.Tabs;
         h('div', { style: { display: 'flex', alignItems: 'center', gap: 7, margin: '0 0 8px' } },
           h('span', { style: { color: 'var(--sf-error-500)', display: 'flex' } }, h(Icon, { name: 'ban', size: 14 })),
           h('span', { style: { font: 'var(--type-h5)', color: 'var(--sf-gray-900)' } }, 'Poor fit \u00b7 shared across segments')),
-        h(G.DataTable, { rows: poorFit, tabKey: 'icp', opts, onRowClick: onOpen, onEditRow: onEdit })) : null);
+        h(G.DataTable, { rows: poorFit, tabKey: 'icp', opts, onRowClick: onOpen, onEditRow: onEdit }),
+        h(G.AddRowButton, { onClick: () => onAdd('poor_fit') })) : null);
   }
 
   Object.assign(G, { ICPSegments });
@@ -4752,8 +4756,9 @@ Object.assign(window, {
       const base = tab === 'all' ? mRows : mRows.filter(r => tabDef.cats.includes(r.category));
       const cats = tab === 'all' ? Object.keys(G.CATEGORY).filter(c => c !== 'ICP Characteristic') : tabDef.cats;
       body = h('div', null,
-        h(G.Toolbar, { count: base.length, onAdd: openAdd('row', cats), addLabel: tab === 'who' ? 'Add persona' : 'Add row' }),
-        h(G.DataTable, { rows: base, tabKey: tab, opts, onRowClick: openView('row'), onEditRow: openEdit('row') }));
+        h(G.Toolbar, { count: base.length }),
+        h(G.DataTable, { rows: base, tabKey: tab, opts, onRowClick: openView('row'), onEditRow: openEdit('row') }),
+        h(G.AddRowButton, { onClick: openAdd('row', cats), label: tab === 'who' ? 'Add persona' : 'Add row' }));
     }
 
     return h('div', { style: { minHeight: '100vh', background: 'var(--color-bg-page)' } },

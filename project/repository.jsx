@@ -205,14 +205,18 @@
       h('div', { style: { font: 'var(--type-body-sm)', color: 'var(--sf-gray-500)', marginTop: 4 } }, sub || 'Try clearing search or filters.'));
   }
 
-  // ── Toolbar ────────────────────────────────────────────────────────────
-  function Toolbar({ count, onAdd, addLabel, children }) {
-    const { Button } = window.SalesforceDesignSystem_585a3e;
+  // ── Toolbar (count line above the table) ──────────────────────────────
+  function Toolbar({ count, children }) {
     return h('div', { style: { display: 'flex', gap: 12, alignItems: 'center', margin: '14px 0', flexWrap: 'wrap' } },
       h('span', { style: { font: 'var(--type-label-sm)', color: 'var(--sf-gray-600)', fontVariantNumeric: 'tabular-nums' } }, count + ' rows'),
-      children || null,
-      h('div', { style: { marginLeft: 'auto' } },
-        h(Button, { variant: 'neutral', icon: 'plus', size: 'sm', onClick: onAdd }, addLabel || 'Add row')));
+      children || null);
+  }
+
+  // ── Add button — consistent placement below every table ───────────────
+  function AddRowButton({ onClick, label }) {
+    const { Button } = window.SalesforceDesignSystem_585a3e;
+    return h('div', { style: { marginTop: 8 } },
+      h(Button, { variant: 'ghost', icon: 'plus', size: 'sm', onClick }, label || 'Add row'));
   }
 
   function applyFilters(rows, q, filters) {
@@ -225,5 +229,5 @@
     });
   }
 
-  Object.assign(G, { PageHeader, MotionRail, CategoryTabs, DataTable, Toolbar, EmptyState, applyFilters });
+  Object.assign(G, { PageHeader, MotionRail, CategoryTabs, DataTable, Toolbar, AddRowButton, EmptyState, applyFilters });
 })();

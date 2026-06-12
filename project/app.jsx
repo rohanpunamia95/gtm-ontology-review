@@ -80,8 +80,9 @@
       const base = tab === 'all' ? mRows : mRows.filter(r => tabDef.cats.includes(r.category));
       const cats = tab === 'all' ? Object.keys(G.CATEGORY).filter(c => c !== 'ICP Characteristic') : tabDef.cats;
       body = h('div', null,
-        h(G.Toolbar, { count: base.length, onAdd: openAdd('row', cats), addLabel: tab === 'who' ? 'Add persona' : 'Add row' }),
-        h(G.DataTable, { rows: base, tabKey: tab, opts, onRowClick: openView('row'), onEditRow: openEdit('row') }));
+        h(G.Toolbar, { count: base.length }),
+        h(G.DataTable, { rows: base, tabKey: tab, opts, onRowClick: openView('row'), onEditRow: openEdit('row') }),
+        h(G.AddRowButton, { onClick: openAdd('row', cats), label: tab === 'who' ? 'Add persona' : 'Add row' }));
     }
 
     return h('div', { style: { minHeight: '100vh', background: 'var(--color-bg-page)' } },
